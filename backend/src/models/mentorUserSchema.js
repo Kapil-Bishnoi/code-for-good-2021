@@ -5,7 +5,7 @@ const mentorUserSchema = mongoose.Schema({        // creating schema for the the
         type: String,
         required: true 
     },
-    fullname: {
+    fullName: {
         type: String,
         required: true
     },

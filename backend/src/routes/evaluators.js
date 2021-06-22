@@ -37,4 +37,35 @@ router.get("/:evaluator_id", (req, res) => {
 		});
 });
 
+// post evaluator to db
+router.post("/", (req, res) => {
+	const newEvaluator = new Evaluator({
+		evaluatorId: req.body.evaluatorId,
+		fullName: req.body.fullName,
+		emailId: req.body.emailId,
+		contactNumber: req.body.contactNumber,
+		designation: req.body.designation,
+	});
+
+	Evaluator.find({ emailId: newEvaluator.emailId })
+		.then((data) => {
+			if (!data || !data.length) {
+				// save the evaluator in db
+				newEvaluator
+					.save()
+					.then((saveRes) => {
+						sendResponse({ response: saveRes, data: newEvaluator, error: null });
+					})
+					.catch((error) => {
+						sendResponse({ response: res, data: null, error: error });
+					});
+			} else {
+				throw Error("user email already exist.Try log in using that email!");
+			}
+		})
+		.catch((error) => {
+			sendResponse({ response: res, data: null, error: error });
+		});
+});
+
 module.exports = router;

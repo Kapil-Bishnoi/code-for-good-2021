@@ -5,7 +5,7 @@ const evaluatorUserSchema = mongoose.Schema({        // creating schema for the 
         type: String,
         required: true 
     },
-    fullname: {
+    fullName: {
         type: String,
         required: true
     },

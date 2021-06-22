@@ -38,4 +38,37 @@ router.get("/:mentor_id", (req, res) => {
 		});
 });
 
+// post mentor to db
+router.post("/", (req, res) => {
+	const newMentor = new Mentor({
+		mentorId: req.body.mentorId,
+		fullName: req.body.fullName,
+		emailId: req.body.emailId,
+		contactNumber: req.body.contactNumber,
+		stateAddress: req.body.stateAddress,
+		districtAddress: req.body.districtAddress,
+		designation: req.body.designation,
+	});
+
+	Mentor.find({ emailId: newMentor.emailId })
+		.then((data) => {
+			if (!data || !data.length) {
+				// save the mentor in db
+				newMentor
+					.save()
+					.then((saveRes) => {
+						sendResponse({ response: saveRes, data: newMentor, error: null });
+					})
+					.catch((error) => {
+						sendResponse({ response: res, data: null, error: error });
+					});
+			} else {
+				throw Error("user email already exist.Try log in using that email!");
+			}
+		})
+		.catch((error) => {
+			sendResponse({ response: res, data: null, error: error });
+		});
+});
+
 module.exports = router;
