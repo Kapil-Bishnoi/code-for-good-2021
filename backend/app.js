@@ -6,6 +6,7 @@ const cors = require("cors");
 const studentsRoute = require("./src/routes/students");
 const mentorsRoute = require("./src/routes/mentors");
 const evaluatorsRoute = require("./src/routes/evaluators");
+const projectsRoute = require("./src/routes/project");
 
 const app = express();
 
@@ -23,13 +24,14 @@ app.use(bodyParser.json());
 app.use("/students", studentsRoute);
 app.use("/evaluators", evaluatorsRoute);
 app.use("/mentors", mentorsRoute);
+app.use("/projects", projectsRoute);
 
 // base endpoint
 app.get("/", (req, res) => {
 	res.send("starting with backend for proejct!");
 });
 
-// listening to port 
+// listening to port
 const PORT = process.env.PORT || 7600;
 app.listen(PORT, () => {
 	console.log("server is running on port", PORT);

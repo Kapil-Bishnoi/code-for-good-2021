@@ -22,7 +22,7 @@ router.get("/id/:project_id", (req, res) => {
 	Project.find({ projectId: req.params.project_id })
 		.then((data) => {
 			if (!data || !data.length) {
-				throw Error("no project exist with the given id!");
+				throw "no project exist with the given id!";
 			} else {
 				sendResponse({ response: res, data: data, error: null });
 			}
@@ -37,7 +37,7 @@ router.get("/domain/:project_domain", (req, res) => {
 	Project.find({ projectDomain: req.params.project_domain })
 		.then((data) => {
 			if (!data || !data.length) {
-				throw Error("no project exist with the given domain!");
+				throw "no project exist with the given domain!";
 			} else {
 				sendResponse({ response: res, data: data, error: null });
 			}
@@ -52,7 +52,7 @@ router.get("/name/:project_name", (req, res) => {
 	Project.find({ projectName: req.params.project_name })
 		.then((data) => {
 			if (!data || !data.length) {
-				throw Error("no project exist with the given name!");
+				throw "no project exist with the given name!";
 			} else {
 				sendResponse({ response: res, data: data, error: null });
 			}
@@ -80,9 +80,13 @@ router.post("/create/:student_id", (req, res) => {
 		score: 0,
 	});
 
+	console.log(newProject);
+
 	newProject
 		.save()
 		.then((saveRes) => {
+			console.log("project created");
+
 			// also need to add this project under that student
 			const newProjectForStudent = {
 				projectId: newProject.projectId,
@@ -93,14 +97,15 @@ router.post("/create/:student_id", (req, res) => {
 				{ $addToSet: { projects: newProjectForStudent } }
 			)
 				.then((updateRes) => {
+					console.log("project is added under student");
 					sendResponse({
-						response: { saveRes, updateRes },
-						data: newProject,
+						response: updateRes,
+						data: JSON.stringify(newProject),
 						error: null,
 					});
 				})
 				.catch((err) => {
-					throw Error(err);
+					sendResponse({ response: res, data: null, error: err });
 				});
 		})
 		.catch((error) => {
@@ -114,9 +119,7 @@ router.post("/join/:student_id/:project_id", (req, res) => {
 		.then((data) => {
 			if (!data || !data.length) {
 				// there no existing project for this id...probably typed wrong project id for joining
-				throw Error(
-					"there no existing project for this id...probably typed wrong project id for joining!"
-				);
+				throw "there no existing project for this id...probably typed wrong project id for joining!";
 			} else {
 				// add this student in team for this project
 				const newTeamMate = {
@@ -138,17 +141,21 @@ router.post("/join/:student_id/:project_id", (req, res) => {
 						)
 							.then((addRes) => {
 								sendResponse({
-									response: { res, addRes, updateRes },
-									data: data,
+									response: addRes,
+									data: data[0],
 									error: null,
 								});
 							})
 							.catch((err) => {
-								throw Error(err);
+								sendResponse({
+									response: updateRes,
+									data: null,
+									error: err,
+								});
 							});
 					})
 					.catch((err) => {
-						throw Error(err);
+						sendResponse({ response: res, data: null, error: err });
 					});
 			}
 		})
@@ -163,13 +170,11 @@ router.post("/submit/:project_id", (req, res) => {
 		.then((data) => {
 			if (!data || !data.length) {
 				// no project exists
-				throw Error("no project exists with this id!");
+				throw "no project exists with this id!";
 			} else {
-				if (data.isSubmited === true) {
+				if (data[0].isSubmited === true) {
 					// proejct is already submitted, It can only be submitted once!
-					throw Error(
-						"proejct is already submitted, It can only be submitted once!"
-					);
+					throw "proejct is already submitted, It can only be submitted once!";
 				} else {
 					Project.updateOne(
 						{ projectId: req.params.project_id },
@@ -183,10 +188,7 @@ router.post("/submit/:project_id", (req, res) => {
 							});
 						})
 						.catch((error) => {
-							throw Error(
-								"error in updating the submission flag of project!",
-								error
-							);
+							sendResponse({ response: res, data: null, error: error });
 						});
 				}
 			}
@@ -202,18 +204,14 @@ router.post("/evaluate/:project_id/:marks", (req, res) => {
 		.then((data) => {
 			if (!data || !data.length) {
 				// no project exists
-				throw Error("no project exists with this id!");
+				throw "no project exists with this id!";
 			} else {
-				if (data.isSubmited === false) {
+				if (data[0].isSubmited === false) {
 					// proejct is already submitted, It can only be submitted once!
-					throw Error(
-						"proejct is not submitted yet, It can only be evaluated after submission!"
-					);
-				} else if (data.isEvaluated === true) {
+					throw "proejct is not submitted yet, It can only be evaluated after submission!";
+				} else if (data[0].isEvaluated === true) {
 					// proejct is already evaluated, It can only be evaluated once!
-					throw Error(
-						"proejct is already evaluated, It can only be evaluated once!"
-					);
+					throw "proejct is already evaluated, It can only be evaluated once!";
 				} else {
 					Project.updateOne(
 						{ projectId: req.params.project_id },
@@ -227,10 +225,7 @@ router.post("/evaluate/:project_id/:marks", (req, res) => {
 							});
 						})
 						.catch((error) => {
-							throw Error(
-								"error in updating the evaluation flag of project!",
-								error
-							);
+							sendResponse({ response: res, data: null, error: error });
 						});
 				}
 			}
@@ -240,3 +235,4 @@ router.post("/evaluate/:project_id/:marks", (req, res) => {
 		});
 });
 
+module.exports = router;
