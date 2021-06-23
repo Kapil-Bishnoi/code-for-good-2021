@@ -45,6 +45,7 @@ router.post("/", (req, res) => {
 		emailId: req.body.emailId,
 		contactNumber: req.body.contactNumber,
 		designation: req.body.designation,
+		assignedProjects: [],   
 	});
 
 	Evaluator.find({ emailId: newEvaluator.emailId })

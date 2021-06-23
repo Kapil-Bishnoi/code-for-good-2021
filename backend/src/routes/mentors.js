@@ -48,6 +48,7 @@ router.post("/", (req, res) => {
 		stateAddress: req.body.stateAddress,
 		districtAddress: req.body.districtAddress,
 		designation: req.body.designation,
+		assignedProjects: [],
 	});
 
 	Mentor.find({ emailId: newMentor.emailId })

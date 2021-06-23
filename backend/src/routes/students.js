@@ -50,17 +50,16 @@ router.post("/", (req, res) => {
 		stateAddress: req.body.stateAddress,
 		districtAddress: req.body.districtAddress,
 		schoolName: req.body.schoolName,
+		projects: [],
 	});
 
 	Student.find({ emailId: newStudent.emailId })
 		.then((data) => {
 			if (!data || !data.length) {
 				// save the student in db
-				console.log("saving");
 				newStudent
 					.save()
 					.then((saveRes) => {
-						console.log("saved");
 						sendResponse({ response: saveRes, data: newStudent, error: null });
 					})
 					.catch((error) => {
