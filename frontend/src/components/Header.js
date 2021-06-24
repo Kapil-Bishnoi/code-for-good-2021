@@ -8,7 +8,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { Button } from "@material-ui/core";
-import {useHistory} from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -17,39 +17,45 @@ const useStyles = makeStyles((theme) => ({
 	menuButton: {
 		marginRight: theme.spacing(2),
 	},
-    left: {
-        flexGrow: 1,
+	left: {
+		flexGrow: 1,
 	},
 	logo: {
 		height: "50px",
-        cursor: 'pointer'
+		cursor: "pointer",
 	},
 	headerOptions: {
 		display: "flex",
 		justifyContent: "space-evenly",
 	},
-    headerItem: {
-        margin: "10px",
-    }
+	headerItem: {
+		margin: "10px",
+	},
 }));
 
 export const Header = () => {
 	const classes = useStyles();
-	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [optionSwitch, toggleOptionSwitch] = React.useState(null);
+	const [signupSwitch, toggleSignupSwitch] = React.useState(null);
 	const logoURL =
 		"https://challenge.balajanaagraha.org/_nuxt/static/bja-html-ui/assets/img/LogoHorizontal.png";
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
-    const history = useHistory();
+	const history = useHistory();
 
 	const handleMenu = (event) => {
-		setAnchorEl(event.currentTarget);
+		toggleOptionSwitch(event.currentTarget);
 	};
 
-    const handleButtonClick = (pathURL) => {
-        history.push(pathURL);
-        setAnchorEl(null);
-    }
+	const handleSignup = (event) => {
+		toggleSignupSwitch(event.currentTarget);
+	};
+
+	const handleButtonClick = (pathURL) => {
+		history.push(pathURL);
+		toggleSignupSwitch(null);
+		toggleOptionSwitch(null);
+	};
 
 	return (
 		<div className={classes.root}>
@@ -71,7 +77,7 @@ export const Header = () => {
 							</IconButton>
 							<Menu
 								id="menu-appbar"
-								anchorEl={anchorEl}
+								anchorEl={optionSwitch}
 								anchorOrigin={{
 									vertical: "top",
 									horizontal: "right",
@@ -81,12 +87,41 @@ export const Header = () => {
 									vertical: "top",
 									horizontal: "right",
 								}}
-								open={Boolean(anchorEl)}
-								onClose={() => setAnchorEl(null)}
+								open={Boolean(optionSwitch)}
+								onClose={() => toggleOptionSwitch(null)}
 							>
-								<MenuItem onClick={() => handleButtonClick("/home")} >Home</MenuItem>
-								<MenuItem onClick={() => handleButtonClick("/signup")} >Sign Up</MenuItem>
-								<MenuItem onClick={() => handleButtonClick("/login")} >Login</MenuItem>
+								<MenuItem onClick={() => handleButtonClick("/home")}>
+									Home
+								</MenuItem>
+								<MenuItem onClick={handleSignup}>Sign Up</MenuItem>
+								<Menu
+									id="menu-signup"
+									anchorEl={signupSwitch}
+									anchorOrigin={{
+										vertical: "top",
+										horizontal: "right",
+									}}
+									keepMounted
+									transformOrigin={{
+										vertical: "top",
+										horizontal: "right",
+									}}
+									open={Boolean(signupSwitch)}
+									onClose={() => toggleSignupSwitch(null)}
+								>
+									<MenuItem onClick={() => handleButtonClick('/signup/student')}>
+										SignUp as Student
+									</MenuItem>
+									<MenuItem onClick={() => handleButtonClick('/signup/mentor')}>
+										SignUp as Mentor
+									</MenuItem>
+									<MenuItem onClick={() => handleButtonClick('/signup/evaluator')}>
+										SignUp as Evaluator
+									</MenuItem>
+								</Menu>
+								<MenuItem onClick={() => handleButtonClick("/login")}>
+									Login
+								</MenuItem>
 							</Menu>
 						</div>
 					) : (
@@ -94,21 +129,46 @@ export const Header = () => {
 							<Button
 								variant="contained"
 								onClick={() => handleButtonClick("/home")}
-                                className={classes.headerItem}
+								className={classes.headerItem}
 							>
 								HOME
 							</Button>
 							<Button
 								variant="contained"
-								onClick={() => handleButtonClick("/signup")}
-                                className={classes.headerItem}
+								onClick={handleSignup}
+								className={classes.headerItem}
 							>
 								SIGN UP
 							</Button>
+							<Menu
+								id="menu-signup"
+								anchorEl={signupSwitch}
+								anchorOrigin={{
+									vertical: "top",
+									horizontal: "right",
+								}}
+								keepMounted
+								transformOrigin={{
+									vertical: "top",
+									horizontal: "right",
+								}}
+								open={Boolean(signupSwitch)}
+								onClose={() => toggleSignupSwitch(null)}
+							>
+								<MenuItem onClick={() => handleButtonClick('/signup/student')}>
+									SignUp as Student
+								</MenuItem>
+								<MenuItem onClick={() => handleButtonClick('/signup/mentor')}>
+									SignUp as Mentor
+								</MenuItem>
+								<MenuItem onClick={() => handleButtonClick('/signup/evaluator')}>
+									SignUp as Evaluator
+								</MenuItem>
+							</Menu>
 							<Button
 								variant="contained"
 								onClick={() => handleButtonClick("/login")}
-                                className={classes.headerItem}
+								className={classes.headerItem}
 							>
 								LOGIN
 							</Button>
