@@ -8,6 +8,7 @@ const mentorsRoute = require("./src/routes/mentors");
 const evaluatorsRoute = require("./src/routes/evaluators");
 const projectsRoute = require("./src/routes/project");
 const fiveIRoute = require("./src/routes/5Istages");
+const sendResponse = require("./src/lib/response");
 
 const app = express();
 
@@ -32,6 +33,14 @@ app.use("/fivei", fiveIRoute);
 app.get("/", (req, res) => {
 	res.send("starting with backend for proejct!");
 });
+
+app.get('/test', (req,res) => {
+	const data = {
+		name: 'kapil',
+		age: 20,
+	}
+	sendResponse({response: res, data: data,error: null});
+})
 
 // listening to port
 const PORT = process.env.PORT || 7600;
