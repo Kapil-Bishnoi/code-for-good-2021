@@ -16,6 +16,7 @@ const router = express.Router();
 
 // fetch all the projects
 router.get("/", (req, res) => {
+	console.log("/projects");
 	Project.find({})
 		.then((data) => {
 			sendResponse({ response: res, data: data, error: null });
@@ -208,7 +209,7 @@ router.post("/submit/:project_id", (req, res) => {
 						.then((updateRes) => {
 							sendResponse({
 								response: res,
-								data: {message: "project successfully submited!", data: data},
+								data: { message: "project successfully submited!", data: data },
 								error: null,
 							});
 						})
