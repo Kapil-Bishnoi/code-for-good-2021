@@ -7,6 +7,7 @@ const studentsRoute = require("./src/routes/students");
 const mentorsRoute = require("./src/routes/mentors");
 const evaluatorsRoute = require("./src/routes/evaluators");
 const projectsRoute = require("./src/routes/project");
+const fiveIRoute = require("./src/routes/5Istages");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/students", studentsRoute);
 app.use("/evaluators", evaluatorsRoute);
 app.use("/mentors", mentorsRoute);
 app.use("/projects", projectsRoute);
+app.use("/fivei", fiveIRoute);
 
 // base endpoint
 app.get("/", (req, res) => {

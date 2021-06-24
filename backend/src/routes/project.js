@@ -3,6 +3,14 @@ const sendResponse = require("../lib/response");
 const Project = require("../models/projectSchema");
 const { v4: uid } = require("uuid");
 const Student = require("../models/studentUserSchema");
+const FiveI = require("../models/5Ischema");
+const {
+	i1Stage,
+	i2Stage,
+	i3Stage,
+	i4Stage,
+	i5Stage,
+} = require("../shared/questions");
 
 const router = express.Router();
 
@@ -80,8 +88,6 @@ router.post("/create/:student_id", (req, res) => {
 		score: 0,
 	});
 
-	console.log(newProject);
-
 	newProject
 		.save()
 		.then((saveRes) => {
@@ -98,11 +104,30 @@ router.post("/create/:student_id", (req, res) => {
 			)
 				.then((updateRes) => {
 					console.log("project is added under student");
-					sendResponse({
-						response: updateRes,
-						data: JSON.stringify(newProject),
-						error: null,
+					// now create fiveI for this project
+					const new5I = new FiveI({
+						projectId: newProject.projectId,
+						identify: i1Stage,
+						investigation: i2Stage,
+						ideation: i3Stage,
+						implementation: i4Stage,
+						inform: i5Stage,
+						demoURL: "",
 					});
+					new5I
+						.save()
+						.then((saveRes) => {
+							console.log("created 5 Is");
+							sendResponse({
+								response: res,
+								data: new5I,
+								error: null,
+							});
+						})
+						.catch((error) => {
+							console.log(error);
+							sendResponse({ response: res, data: null, error: error });
+						});
 				})
 				.catch((err) => {
 					sendResponse({ response: res, data: null, error: err });
@@ -141,14 +166,14 @@ router.post("/join/:student_id/:project_id", (req, res) => {
 						)
 							.then((addRes) => {
 								sendResponse({
-									response: addRes,
-									data: data[0],
+									response: res,
+									data: "successfully joined",
 									error: null,
 								});
 							})
 							.catch((err) => {
 								sendResponse({
-									response: updateRes,
+									response: res,
 									data: null,
 									error: err,
 								});
@@ -182,8 +207,8 @@ router.post("/submit/:project_id", (req, res) => {
 					)
 						.then((updateRes) => {
 							sendResponse({
-								response: updateRes,
-								data: "project successfully submited!",
+								response: res,
+								data: {message: "project successfully submited!", data: data},
 								error: null,
 							});
 						})
@@ -219,7 +244,7 @@ router.post("/evaluate/:project_id/:marks", (req, res) => {
 					)
 						.then((updateRes) => {
 							sendResponse({
-								response: updateRes,
+								response: res,
 								data: "project successfully evaluated!",
 								error: null,
 							});
