@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -10,6 +10,7 @@ import Menu from "@material-ui/core/Menu";
 import { Button } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { fire } from "../firebase";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -52,10 +53,30 @@ export const HeaderAuth = () => {
 		toggleOptionSwitch(null);
 	};
 
-    const firebaseLogout = () => {
+	const firebaseLogout = () => {
 		fire.auth().signOut();
 		localStorage.removeItem("userId");
-	}
+	};
+
+	const [user, setUser] = useState(null);
+	console.log(user);
+
+	useEffect(() => {
+		const userId = localStorage.getItem("userId");
+		const role = localStorage.getItem("role");
+		axios
+			.get(`https://cfg2021.herokuapp.com/${role}s/${userId}`)
+			.then((res) => {
+				// console.log(res);
+				const data = res.data.data;
+				if (data !== null && data.length !== 0) {
+					setUser(data[0]);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
 
 	return (
 		<div className={classes.root}>
@@ -93,18 +114,25 @@ export const HeaderAuth = () => {
 								<MenuItem onClick={() => handleButtonClick("/home")}>
 									Home
 								</MenuItem>
-								<MenuItem onClick={() => handleButtonClick("/createproject")}>
-									Create/Join Project
-								</MenuItem>
+								{user?.role === "student" && (
+									<MenuItem onClick={() => handleButtonClick("/createproject")}>
+										Create/Join Project
+									</MenuItem>
+								)}
+								{user?.role !== "student" && (
+									<MenuItem
+										onClick={() => handleButtonClick("/selectprojects")}
+									>
+										Select Projects
+									</MenuItem>
+								)}
 								<MenuItem onClick={() => handleButtonClick("/projects")}>
 									Projects
 								</MenuItem>
-                                <MenuItem onClick={() => handleButtonClick("/profile")}>
+								<MenuItem onClick={() => handleButtonClick("/profile")}>
 									Profile
 								</MenuItem>
-                                <MenuItem onClick={() => firebaseLogout()}>
-									Logout
-								</MenuItem>
+								<MenuItem onClick={() => firebaseLogout()}>Logout</MenuItem>
 							</Menu>
 						</div>
 					) : (
@@ -116,21 +144,32 @@ export const HeaderAuth = () => {
 							>
 								HOME
 							</Button>
+							{user?.role === "student" && (
+								<Button
+									variant="contained"
+									onClick={() => handleButtonClick("/createproject")}
+									className={classes.headerItem}
+								>
+									Create/Join Project
+								</Button>
+							)}
+							{user?.role !== "student" && (
+								<Button
+									variant="contained"
+									onClick={() => handleButtonClick("/selectprojects")}
+									className={classes.headerItem}
+								>
+									Select Projects
+								</Button>
+							)}
 							<Button
-								variant="contained"
-								onClick={() => handleButtonClick("/createproject")}
-								className={classes.headerItem}
-							>
-								Create/Join Project
-							</Button>
-                            <Button
 								variant="contained"
 								onClick={() => handleButtonClick("/projects")}
 								className={classes.headerItem}
 							>
 								Projects
 							</Button>
-                            <Button
+							<Button
 								variant="contained"
 								onClick={() => handleButtonClick("/profile")}
 								className={classes.headerItem}

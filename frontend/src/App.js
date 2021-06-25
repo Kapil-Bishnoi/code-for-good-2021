@@ -12,6 +12,8 @@ import { HeaderAuth } from "./components/HeaderAuth";
 
 function App() {
 	const { firebaseUser } = useContext(AuthContext);
+	const userRole = localStorage.getItem("role");
+	console.log(userRole);
 
 	if (!firebaseUser) {
 		return (
@@ -45,10 +47,15 @@ function App() {
 				<HeaderAuth />
 				<Switch>
 					<Route exact path="/home" component={() => <Home />} />
-					<Route exact path="/createproject" component={() => <Home />} />
+					{userRole === "student" && (
+						<Route exact path="/createproject" component={() => <Home />} />
+					)}
+					{userRole !== "student" && (
+						<Route exact path="/selectprojects" component={() => <Home />} />
+					)}
 					<Route exact path="/projects" component={() => <Home />} />
 					<Route exact path="/profile" component={() => <Home />} />
-					<Redirect to="/home" />
+					{/* <Redirect to="/home" /> */}
 				</Switch>
 			</div>
 		);

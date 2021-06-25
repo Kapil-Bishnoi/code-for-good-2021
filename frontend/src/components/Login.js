@@ -14,7 +14,8 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import { fire } from "../firebase";
-import {useHistory} from 'react-router-dom';
+import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -75,24 +76,39 @@ export const Login = () => {
 	});
 
 	const firebaseLogin = () => {
-		fire
-			.auth()
-			.signInWithEmailAndPassword(
-				userInput.emailId.trim(),
-				userInput.password
+		// check wether selected role is correct or not
+		axios
+			.get(
+				`https://cfg2021.herokuapp.com/role/${userInput.role}/${userInput.emailId}`
 			)
-			.then((data) => {
-				console.log(data);
+			.then((res) => {
+				const data = res.data.data;
+				if (!data || !data.length) {
+					alert("select the correct role associated with this email id");
+				} else {
+					fire
+						.auth()
+						.signInWithEmailAndPassword(
+							userInput.emailId.trim(),
+							userInput.password
+						)
+						.then((data) => {
+							console.log(data);
 
-				// get userId from firebase signing up
-				const userId = data.user.uid;
-				localStorage.setItem("userId", userId);
-				localStorage.setItem('role', userInput.role);
-				history.push('/home');
+							// get userId from firebase signing up
+							const userId = data.user.uid;
+							localStorage.setItem("userId", userId);
+							localStorage.setItem("role", userInput.role);
+							history.push("/home");
+						})
+						.catch((err) => {
+							console.log(err);
+							alert(err?.message);
+						});
+				}
 			})
 			.catch((err) => {
 				console.log(err);
-				alert(err?.message);
 			});
 	};
 
