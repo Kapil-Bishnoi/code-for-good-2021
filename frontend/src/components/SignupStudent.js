@@ -12,6 +12,8 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
+import { fire } from "../firebase";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -62,10 +64,69 @@ export const SignupStudent = () => {
 		});
 	};
 
+	const postStudentUser = (studentUser) => {
+		axios
+			.request("https://cfg2021.herokuapp.com/students", {
+				method: "POST",
+				data: JSON.stringify(studentUser),
+				headers: {
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": "*",
+				},
+			})
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const firebaseStudentSignup = () => {
+		fire
+			.auth()
+			.createUserWithEmailAndPassword(
+				userInput.emailId.trim(),
+				userInput.password
+			)
+			.then((data) => {
+				console.log(data);
+				// get userId from firebase signing up
+				const userId = data.user.uid;
+				localStorage.setItem("userId", userId);
+
+				const studentUser = {
+					studentId: userId,
+					fullName: userInput.fullName,
+					emailId: userInput.emailId.trim(),
+					contactNumber: userInput.contactNumber,
+					grade: userInput.grade,
+					age: userInput.age,
+					stateAddress: userInput.stateAddress,
+					districtAddress: userInput.districtAddress,
+					schoolName: userInput.schoolName,
+				};
+
+				// post user in monogdb database
+				postStudentUser(studentUser);
+			})
+			.catch((err) => {
+				console.log(err);
+				alert(err?.message);
+			});
+	};
+
 	const handleStudentSignup = (e) => {
 		e.preventDefault();
+
 		if (isValid() === true) {
+			// if all the form inputs are valid
 			console.log(userInput);
+
+			// sign up using firebase auth
+			firebaseStudentSignup();
+
+			// clearing form inputs
 			setUserInput(initialUserInput);
 		}
 	};
@@ -163,7 +224,9 @@ export const SignupStudent = () => {
 										? false
 										: true
 								}
-								helperText={errorMessages.password || errorMessages.passwordMatch}
+								helperText={
+									errorMessages.password || errorMessages.passwordMatch
+								}
 								name="confirmPassword"
 								value={userInput.confirmPassword}
 								onChange={handleInputChange}

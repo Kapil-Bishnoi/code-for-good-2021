@@ -12,6 +12,8 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
+import { fire } from "../firebase";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -60,13 +62,69 @@ export const SignupMentor = () => {
 		});
 	};
 
+	const postMentorUser = (mentorUser) => {
+		axios
+			.request("https://cfg2021.herokuapp.com/mentors", {
+				method: "POST",
+				data: JSON.stringify(mentorUser),
+				headers: {
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": "*",
+				},
+			})
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const firebaseMentorSignup = () => {
+		fire
+			.auth()
+			.createUserWithEmailAndPassword(
+				userInput.emailId.trim(),
+				userInput.password
+			)
+			.then((data) => {
+				console.log(data);
+				// get userId from firebase signing up
+				const userId = data.user.uid;
+				localStorage.setItem("userId", userId);
+
+				const mentorUser = {
+					mentorId: userId,
+					fullName: userInput.fullName,
+					emailId: userInput.emailId.trim(),
+					contactNumber: userInput.contactNumber,
+					stateAddress: userInput.stateAddress,
+					districtAddress: userInput.districtAddress,
+					designation: userInput.designation,
+				};
+
+				// post user in monogdb database
+				postMentorUser(mentorUser);
+			})
+			.catch((err) => {
+				console.log(err);
+				alert(err?.message);
+			});
+	};
+
 	const handleMentorSignup = (e) => {
 		e.preventDefault();
 		if (isValid() === true) {
+			// if all the form inputs are valid
 			console.log(userInput);
+
+			// sign up using firebase auth
+			firebaseMentorSignup();
+
+			// clearing form inputs
 			setUserInput(initialUserInput);
 		}
-	}
+	};
 
 	const isValid = () => {
 		const errors = {};

@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
+import { fire } from "../firebase";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -71,11 +72,37 @@ export const Login = () => {
 		evaluator: false,
 	});
 
+	const firebaseLogin = () => {
+		fire
+			.auth()
+			.signInWithEmailAndPassword(
+				userInput.emailId.trim(),
+				userInput.password
+			)
+			.then((data) => {
+				console.log(data);
+
+				// get userId from firebase signing up
+				const userId = data.user.uid;
+				localStorage.setItem("userId", userId);
+
+			})
+			.catch((err) => {
+				console.log(err);
+				alert(err?.message);
+			});
+	};
+
 	const handleLogin = (e) => {
 		e.preventDefault();
 		if (isValid() === true) {
+			// if all the form inputs are valid
 			console.log(userInput);
-			// login using firebase and check for role using backend
+
+			// sign up using firebase auth
+			firebaseLogin();
+
+			// clearing form inputs
 			setUserInput(initialUserInput);
 		}
 	};

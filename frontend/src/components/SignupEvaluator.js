@@ -12,6 +12,8 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
+import {fire} from '../firebase';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -58,10 +60,66 @@ export const SignupEvaluator = () => {
 		});
 	};
 
+
+	const postEvaluatorUser = (evaluatorUser) => {
+		axios
+			.request("https://cfg2021.herokuapp.com/evaluators", {
+				method: "POST",
+				data: JSON.stringify(evaluatorUser),
+				headers: {
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": "*",
+				},
+			})
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const firebaseEvaluatorSignup = () => {
+		fire
+			.auth()
+			.createUserWithEmailAndPassword(
+				userInput.emailId.trim(),
+				userInput.password
+			)
+			.then((data) => {
+				console.log(data);
+				// get userId from firebase signing up
+				const userId = data.user.uid;
+				localStorage.setItem("userId", userId);
+
+				const evaluatorUser = {
+					evaluatorId: userId,
+					fullName: userInput.fullName,
+					emailId: userInput.emailId.trim(),
+					contactNumber: userInput.contactNumber,
+					designation: userInput.designation,
+				};
+
+				// post user in monogdb database
+				postEvaluatorUser(evaluatorUser);
+			})
+			.catch((err) => {
+				console.log(err);
+				alert(err?.message);
+			});
+	};
+
 	const handleEvaluatorSignup = (e) => {
 		e.preventDefault();
+
 		if (isValid() === true) {
+			// if all the form inputs are valid
 			console.log(userInput);
+
+			// sign up using firebase auth
+			firebaseEvaluatorSignup();
+
+			// clearing form inputs
 			setUserInput(initialUserInput);
 		}
 	};
