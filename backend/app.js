@@ -8,10 +8,8 @@ const mentorsRoute = require("./src/routes/mentors");
 const evaluatorsRoute = require("./src/routes/evaluators");
 const projectsRoute = require("./src/routes/project");
 const fiveIRoute = require("./src/routes/5Istages");
+const roleRoute = require('./src/routes/role');
 const sendResponse = require("./src/lib/response");
-const Student = require("./src/models/studentUserSchema");
-const Mentor = require("./src/models/mentorUserSchema");
-const Evaluator = require("./src/models/evaluatorUserSchema");
 
 const app = express();
 
@@ -31,6 +29,7 @@ app.use("/evaluators", evaluatorsRoute);
 app.use("/mentors", mentorsRoute);
 app.use("/projects", projectsRoute);
 app.use("/fivei", fiveIRoute);
+app.use('/role', roleRoute);
 
 // base endpoint
 app.get("/", (req, res) => {
