@@ -48,6 +48,10 @@ export const SignupMentor = () => {
 	};
 
 	const [userInput, setUserInput] = React.useState(initialUserInput);
+	const [errorMessages, setErrorMessages] = React.useState({
+		...initialUserInput,
+		passwordMatch: "",
+	});
 
 	const handleInputChange = (e) => {
 		setUserInput({
@@ -58,9 +62,29 @@ export const SignupMentor = () => {
 
 	const handleMentorSignup = (e) => {
 		e.preventDefault();
-		console.log(userInput);
-		setUserInput(initialUserInput);
+		if (isValid() === true) {
+			console.log(userInput);
+			setUserInput(initialUserInput);
+		}
 	}
+
+	const isValid = () => {
+		const errors = {};
+		errors.fullName = userInput.fullName !== "" ? "" : "Required";
+		errors.emailId = userInput.emailId !== "" ? "" : "Required";
+		errors.password = userInput.password !== "" ? "" : "Required";
+		errors.confirmPassword = userInput.confirmPassword !== "" ? "" : "Required";
+		errors.designation = userInput.designation !== "" ? "" : "Required";
+		errors.contactNumber = userInput.contactNumber !== "" ? "" : "Required";
+		errors.districtAddress = userInput.districtAddress !== "" ? "" : "Required";
+		errors.stateAddress = userInput.stateAddress !== "" ? "" : "Required";
+		errors.passwordMatch =
+			userInput.password === userInput.confirmPassword
+				? ""
+				: "Confirm password should match with password";
+		setErrorMessages({ ...errors });
+		return Object.values(errors).every((item) => item === "");
+	};
 
 	return (
 		<Container component="main" maxWidth="md">
@@ -80,6 +104,8 @@ export const SignupMentor = () => {
 								name="fullName"
 								value={userInput.fullName}
 								onChange={handleInputChange}
+								error={errorMessages.fullName === "" ? false : true}
+								helperText={errorMessages.fullName}
 								variant="outlined"
 								required
 								fullWidth
@@ -98,6 +124,8 @@ export const SignupMentor = () => {
 								name="emailId"
 								value={userInput.emailId}
 								onChange={handleInputChange}
+								error={errorMessages.emailId === "" ? false : true}
+								helperText={errorMessages.emailId}
 								autoComplete="email"
 							/>
 						</Grid>
@@ -109,6 +137,8 @@ export const SignupMentor = () => {
 								name="password"
 								value={userInput.password}
 								onChange={handleInputChange}
+								error={errorMessages.password === "" ? false : true}
+								helperText={errorMessages.password}
 								label="Password"
 								type="password"
 								id="password"
@@ -123,6 +153,15 @@ export const SignupMentor = () => {
 								name="confirmPassword"
 								value={userInput.confirmPassword}
 								onChange={handleInputChange}
+								error={
+									errorMessages.confirmPassword === "" &&
+									errorMessages.passwordMatch === ""
+										? false
+										: true
+								}
+								helperText={
+									errorMessages.password || errorMessages.passwordMatch
+								}
 								label="Confirm Password"
 								type="password"
 								id="confirmPassword"
@@ -133,6 +172,9 @@ export const SignupMentor = () => {
 							<TextField
 								variant="outlined"
 								fullWidth
+								required
+								error={errorMessages.contactNumber === "" ? false : true}
+								helperText={errorMessages.contactNumber}
 								name="contactNumber"
 								value={userInput.contactNumber}
 								onChange={handleInputChange}
@@ -146,6 +188,8 @@ export const SignupMentor = () => {
 							<TextField
 								variant="outlined"
 								required
+								error={errorMessages.stateAddress === "" ? false : true}
+								helperText={errorMessages.stateAddress}
 								fullWidth
 								name="stateAddress"
 								value={userInput.stateAddress}
@@ -160,6 +204,8 @@ export const SignupMentor = () => {
 							<TextField
 								variant="outlined"
 								required
+								error={errorMessages.districtAddress === "" ? false : true}
+								helperText={errorMessages.districtAddress}
 								fullWidth
 								name="districtAddress"
 								value={userInput.districtAddress}
@@ -174,6 +220,8 @@ export const SignupMentor = () => {
 							<TextField
 								variant="outlined"
 								required
+								error={errorMessages.designation === "" ? false : true}
+								helperText={errorMessages.designation}
 								fullWidth
 								name="designation"
 								value={userInput.designation}

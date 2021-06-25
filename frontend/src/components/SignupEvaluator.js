@@ -46,6 +46,10 @@ export const SignupEvaluator = () => {
 	};
 
 	const [userInput, setUserInput] = React.useState(initialUserInput);
+	const [errorMessages, setErrorMessages] = React.useState({
+		...initialUserInput,
+		passwordMatch: "",
+	});
 
 	const handleInputChange = (e) => {
 		setUserInput({
@@ -56,9 +60,27 @@ export const SignupEvaluator = () => {
 
 	const handleEvaluatorSignup = (e) => {
 		e.preventDefault();
-		console.log(userInput);
-		setUserInput(initialUserInput);
-	}
+		if (isValid() === true) {
+			console.log(userInput);
+			setUserInput(initialUserInput);
+		}
+	};
+
+	const isValid = () => {
+		const errors = {};
+		errors.fullName = userInput.fullName !== "" ? "" : "Required";
+		errors.emailId = userInput.emailId !== "" ? "" : "Required";
+		errors.password = userInput.password !== "" ? "" : "Required";
+		errors.confirmPassword = userInput.confirmPassword !== "" ? "" : "Required";
+		errors.designation = userInput.designation !== "" ? "" : "Required";
+		errors.contactNumber = userInput.contactNumber !== "" ? "" : "Required";
+		errors.passwordMatch =
+			userInput.password === userInput.confirmPassword
+				? ""
+				: "Confirm password should match with password";
+		setErrorMessages({ ...errors });
+		return Object.values(errors).every((item) => item === "");
+	};
 
 	return (
 		<Container component="main" maxWidth="md">
@@ -70,7 +92,11 @@ export const SignupEvaluator = () => {
 				<Typography component="h1" variant="h5">
 					Evaluator Sign Up
 				</Typography>
-				<form className={classes.form} noValidate onSubmit={handleEvaluatorSignup}>
+				<form
+					className={classes.form}
+					noValidate
+					onSubmit={handleEvaluatorSignup}
+				>
 					<Grid container spacing={4}>
 						<Grid item xs={12} sm={6}>
 							<TextField
@@ -78,6 +104,8 @@ export const SignupEvaluator = () => {
 								name="fullName"
 								value={userInput.fullName}
 								onChange={handleInputChange}
+								error={errorMessages.fullName === "" ? false : true}
+								helperText={errorMessages.fullName}
 								variant="outlined"
 								required
 								fullWidth
@@ -91,6 +119,8 @@ export const SignupEvaluator = () => {
 								variant="outlined"
 								required
 								fullWidth
+								error={errorMessages.emailId === "" ? false : true}
+								helperText={errorMessages.emailId}
 								id="emailId"
 								label="Email Address"
 								name="emailId"
@@ -107,6 +137,8 @@ export const SignupEvaluator = () => {
 								name="password"
 								value={userInput.password}
 								onChange={handleInputChange}
+								error={errorMessages.password === "" ? false : true}
+								helperText={errorMessages.password}
 								label="Password"
 								type="password"
 								id="password"
@@ -121,6 +153,15 @@ export const SignupEvaluator = () => {
 								name="confirmPassword"
 								value={userInput.confirmPassword}
 								onChange={handleInputChange}
+								error={
+									errorMessages.confirmPassword === "" &&
+									errorMessages.passwordMatch === ""
+										? false
+										: true
+								}
+								helperText={
+									errorMessages.password || errorMessages.passwordMatch
+								}
 								label="Confirm Password"
 								type="password"
 								id="confirmPassword"
@@ -131,16 +172,19 @@ export const SignupEvaluator = () => {
 							<TextField
 								variant="outlined"
 								fullWidth
+								required
 								name="contactNumber"
 								value={userInput.contactNumber}
 								onChange={handleInputChange}
+								error={errorMessages.contactNumber === "" ? false : true}
+								helperText={errorMessages.contactNumber}
 								label="Contact Number"
 								type="number"
 								id="contactNumber"
 								autoComplete="cNumber"
 							/>
 						</Grid>
-                        <Grid item xs={12} sm={6}>
+						<Grid item xs={12} sm={6}>
 							<TextField
 								variant="outlined"
 								required
@@ -148,6 +192,8 @@ export const SignupEvaluator = () => {
 								name="designation"
 								value={userInput.designation}
 								onChange={handleInputChange}
+								error={errorMessages.designation === "" ? false : true}
+								helperText={errorMessages.designation}
 								label="Designation"
 								type="text"
 								id="designation"

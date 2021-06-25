@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 	avatar: {
 		margin: theme.spacing(1),
 		backgroundColor: theme.palette.secondary.main,
-	}, 
+	},
 	form: {
 		width: "100%", // Fix IE 11 issue.
 		marginTop: theme.spacing(1),
@@ -56,11 +56,14 @@ const useStyles = makeStyles((theme) => ({
 export const Login = () => {
 	const classes = useStyles();
 
-	const [userInput, setUserInput] = React.useState({
+	const initialUserInput = {
 		emailId: "",
 		password: "",
 		role: "student",
-	});
+	};
+
+	const [userInput, setUserInput] = React.useState(initialUserInput);
+	const [errorMessages, setErrorMessages] = React.useState(initialUserInput);
 
 	const [userRole, setUserRole] = React.useState({
 		student: true,
@@ -70,8 +73,11 @@ export const Login = () => {
 
 	const handleLogin = (e) => {
 		e.preventDefault();
-		console.log(userInput);
-        // login using firebase and check for role using backend
+		if (isValid() === true) {
+			console.log(userInput);
+			// login using firebase and check for role using backend
+			setUserInput(initialUserInput);
+		}
 	};
 
 	const handleInputChange = (e) => {
@@ -79,6 +85,14 @@ export const Login = () => {
 			...userInput,
 			[e.target.name]: e.target.value,
 		});
+	};
+
+	const isValid = () => {
+		const errors = {};
+		errors.emailId = userInput.emailId !== "" ? "" : "Required";
+		errors.password = userInput.password !== "" ? "" : "Required";
+		setErrorMessages({ ...errors });
+		return Object.values(errors).every((item) => item === "");
 	};
 
 	return (
@@ -98,6 +112,8 @@ export const Login = () => {
 							variant="outlined"
 							margin="normal"
 							required
+							error={errorMessages.emailId === "" ? false : true}
+							helperText={errorMessages.emailId}
 							fullWidth
 							id="emailId"
 							label="Email Address"
@@ -111,6 +127,8 @@ export const Login = () => {
 							variant="outlined"
 							margin="normal"
 							required
+							error={errorMessages.password === "" ? false : true}
+							helperText={errorMessages.password}
 							fullWidth
 							name="password"
 							label="Password"
@@ -127,7 +145,7 @@ export const Login = () => {
 										name="student"
 										onClick={() => {
 											setUserRole({
-												student: !userRole.student,
+												student: true,
 												mentor: false,
 												evaluator: false,
 											});
@@ -149,7 +167,7 @@ export const Login = () => {
 										onClick={() => {
 											setUserRole({
 												student: false,
-												mentor: !userRole.mentor,
+												mentor: true,
 												evaluator: false,
 											});
 											setUserInput({
@@ -171,7 +189,7 @@ export const Login = () => {
 											setUserRole({
 												student: false,
 												mentor: false,
-												evaluator: !userRole.evaluator,
+												evaluator: true,
 											});
 											setUserInput({
 												...userInput,

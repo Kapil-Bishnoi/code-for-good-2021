@@ -42,14 +42,18 @@ export const SignupStudent = () => {
 		password: "",
 		confirmPassword: "",
 		contactNumber: "",
-		grade: false,
-		age: false,
+		grade: "",
+		age: "",
 		stateAddress: "",
 		districtAddress: "",
 		schoolName: "",
 	};
 
 	const [userInput, setUserInput] = React.useState(initialUserInput);
+	const [errorMessages, setErrorMessages] = React.useState({
+		...initialUserInput,
+		passwordMatch: "",
+	});
 
 	const handleInputChange = (e) => {
 		setUserInput({
@@ -60,8 +64,29 @@ export const SignupStudent = () => {
 
 	const handleStudentSignup = (e) => {
 		e.preventDefault();
-		console.log(userInput);
-		setUserInput(initialUserInput);
+		if (isValid() === true) {
+			console.log(userInput);
+			setUserInput(initialUserInput);
+		}
+	};
+
+	const isValid = () => {
+		const errors = {};
+		errors.fullName = userInput.fullName !== "" ? "" : "Required";
+		errors.emailId = userInput.emailId !== "" ? "" : "Required";
+		errors.password = userInput.password !== "" ? "" : "Required";
+		errors.confirmPassword = userInput.confirmPassword !== "" ? "" : "Required";
+		errors.grade = userInput.grade !== "" ? "" : "Required";
+		errors.age = userInput.age !== "" ? "" : "Required";
+		errors.districtAddress = userInput.districtAddress !== "" ? "" : "Required";
+		errors.stateAddress = userInput.stateAddress !== "" ? "" : "Required";
+		errors.schoolName = userInput.schoolName !== "" ? "" : "Required";
+		errors.passwordMatch =
+			userInput.password === userInput.confirmPassword
+				? ""
+				: "Confirm password should match with password";
+		setErrorMessages({ ...errors });
+		return Object.values(errors).every((item) => item === "");
 	};
 
 	return (
@@ -89,6 +114,8 @@ export const SignupStudent = () => {
 								variant="outlined"
 								required
 								fullWidth
+								error={errorMessages.fullName === "" ? false : true}
+								helperText={errorMessages.fullName}
 								id="fullName"
 								label="Full Name"
 								autoFocus
@@ -99,6 +126,8 @@ export const SignupStudent = () => {
 								variant="outlined"
 								required
 								fullWidth
+								error={errorMessages.emailId === "" ? false : true}
+								helperText={errorMessages.emailId}
 								id="emailId"
 								label="Email Address"
 								name="emailId"
@@ -112,6 +141,8 @@ export const SignupStudent = () => {
 								variant="outlined"
 								required
 								fullWidth
+								error={errorMessages.password === "" ? false : true}
+								helperText={errorMessages.password}
 								name="password"
 								value={userInput.password}
 								onChange={handleInputChange}
@@ -126,6 +157,13 @@ export const SignupStudent = () => {
 								variant="outlined"
 								required
 								fullWidth
+								error={
+									errorMessages.confirmPassword === "" &&
+									errorMessages.passwordMatch === ""
+										? false
+										: true
+								}
+								helperText={errorMessages.password || errorMessages.passwordMatch}
 								name="confirmPassword"
 								value={userInput.confirmPassword}
 								onChange={handleInputChange}
@@ -153,6 +191,8 @@ export const SignupStudent = () => {
 								variant="outlined"
 								required
 								fullWidth
+								error={errorMessages.grade === "" ? false : true}
+								helperText={errorMessages.grade}
 								name="grade"
 								value={userInput.grade}
 								onChange={handleInputChange}
@@ -167,6 +207,8 @@ export const SignupStudent = () => {
 								variant="outlined"
 								required
 								fullWidth
+								error={errorMessages.age === "" ? false : true}
+								helperText={errorMessages.age}
 								name="age"
 								value={userInput.age}
 								onChange={handleInputChange}
@@ -181,6 +223,8 @@ export const SignupStudent = () => {
 								variant="outlined"
 								required
 								fullWidth
+								error={errorMessages.stateAddress === "" ? false : true}
+								helperText={errorMessages.stateAddress}
 								name="stateAddress"
 								value={userInput.stateAddress}
 								onChange={handleInputChange}
@@ -195,6 +239,8 @@ export const SignupStudent = () => {
 								variant="outlined"
 								required
 								fullWidth
+								error={errorMessages.districtAddress === "" ? false : true}
+								helperText={errorMessages.districtAddress}
 								name="districtAddress"
 								value={userInput.districtAddress}
 								onChange={handleInputChange}
@@ -209,6 +255,8 @@ export const SignupStudent = () => {
 								variant="outlined"
 								required
 								fullWidth
+								error={errorMessages.schoolName === "" ? false : true}
+								helperText={errorMessages.schoolName}
 								name="schoolName"
 								value={userInput.schoolName}
 								onChange={handleInputChange}
