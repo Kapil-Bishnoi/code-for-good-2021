@@ -60,7 +60,7 @@ router.post("/", (req, res) => {
 				newStudent
 					.save()
 					.then((saveRes) => {
-						sendResponse({ response: saveRes, data: newStudent, error: null });
+						sendResponse({ response: res, data: newStudent, error: null });
 					})
 					.catch((error) => {
 						sendResponse({ response: res, data: null, error: error });
