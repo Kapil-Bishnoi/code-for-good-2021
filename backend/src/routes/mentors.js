@@ -42,6 +42,7 @@ router.get("/:mentor_id", (req, res) => {
 router.post("/", (req, res) => {
 	const newMentor = new Mentor({
 		mentorId: req.body.mentorId,
+		role: req.body.role,
 		fullName: req.body.fullName,
 		emailId: req.body.emailId,
 		contactNumber: req.body.contactNumber,
@@ -58,7 +59,7 @@ router.post("/", (req, res) => {
 				newMentor
 					.save()
 					.then((saveRes) => {
-						sendResponse({ response: saveRes, data: newMentor, error: null });
+						sendResponse({ response: res, data: newMentor, error: null });
 					})
 					.catch((error) => {
 						sendResponse({ response: res, data: null, error: error });

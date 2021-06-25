@@ -52,7 +52,7 @@ router.post("/create/:project_id", (req, res) => {
 	new5I
 		.save()
 		.then((saveRes) => {
-			sendResponse({ response: saveRes, data: new5I, error: null });
+			sendResponse({ response: res, data: new5I, error: null });
 		})
 		.catch((error) => {
 			sendResponse({ response: res, data: null, error: error });

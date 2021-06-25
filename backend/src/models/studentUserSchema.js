@@ -5,6 +5,10 @@ const studentUserSchema = mongoose.Schema({        // creating schema for the th
         type: String,
         required: true 
     },
+    role: {
+        type: String,
+        required: true
+    },
     projects: {
         type: Array,
     },

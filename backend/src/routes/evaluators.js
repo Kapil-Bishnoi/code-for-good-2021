@@ -41,6 +41,7 @@ router.get("/:evaluator_id", (req, res) => {
 router.post("/", (req, res) => {
 	const newEvaluator = new Evaluator({
 		evaluatorId: req.body.evaluatorId,
+		role: req.body.role,
 		fullName: req.body.fullName,
 		emailId: req.body.emailId,
 		contactNumber: req.body.contactNumber,
@@ -55,7 +56,7 @@ router.post("/", (req, res) => {
 				newEvaluator
 					.save()
 					.then((saveRes) => {
-						sendResponse({ response: saveRes, data: newEvaluator, error: null });
+						sendResponse({ response: res, data: newEvaluator, error: null });
 					})
 					.catch((error) => {
 						sendResponse({ response: res, data: null, error: error });

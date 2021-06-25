@@ -42,6 +42,7 @@ router.get("/:student_id", (req, res) => {
 router.post("/", (req, res) => {
 	const newStudent = new Student({
 		studentId: req.body.studentId,
+		role: req.body.role,
 		fullName: req.body.fullName,
 		emailId: req.body.emailId,
 		contactNumber: req.body.contactNumber,

@@ -6,6 +6,10 @@ const mentorUserSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	role: {
+        type: String,
+        required: true
+    },
 	fullName: {
 		type: String,
 		required: true,
