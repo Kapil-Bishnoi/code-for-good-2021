@@ -14,6 +14,7 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import { fire } from "../firebase";
+import {useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -56,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const Login = () => {
 	const classes = useStyles();
+	const history = useHistory();
 
 	const initialUserInput = {
 		emailId: "",
@@ -85,7 +87,8 @@ export const Login = () => {
 				// get userId from firebase signing up
 				const userId = data.user.uid;
 				localStorage.setItem("userId", userId);
-
+				localStorage.setItem('role', userInput.role);
+				history.push('/home');
 			})
 			.catch((err) => {
 				console.log(err);

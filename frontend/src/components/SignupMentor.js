@@ -74,6 +74,7 @@ export const SignupMentor = () => {
 			})
 			.then((res) => {
 				console.log(res);
+				history.push('/home');
 			})
 			.catch((err) => {
 				console.log(err);
@@ -92,9 +93,11 @@ export const SignupMentor = () => {
 				// get userId from firebase signing up
 				const userId = data.user.uid;
 				localStorage.setItem("userId", userId);
+				localStorage.setItem('role', 'mentor');
 
 				const mentorUser = {
 					mentorId: userId,
+					role: "mentor",
 					fullName: userInput.fullName,
 					emailId: userInput.emailId.trim(),
 					contactNumber: userInput.contactNumber,

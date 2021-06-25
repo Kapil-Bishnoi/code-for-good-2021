@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import "./CSS/App.css";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { Header } from "./components/Header";
@@ -9,17 +9,18 @@ import { SignupStudent } from "./components/SignupStudent";
 import { Login } from "./components/Login";
 import {AuthContext} from './context/Auth';
 import {fire} from './firebase';
+import axios from "axios";
 
 function App() {
 
-	const {currentUser} = useContext(AuthContext);
+	const {firebaseUser} = useContext(AuthContext);
 
 	const firebaseLogout = () => {
 		fire.auth().signOut();
-		localStorage.clear();
+		localStorage.removeItem("userId");
 	}
 
-	if(!currentUser){
+	if(!firebaseUser){
 		return (
 			<div className="App">
 				<Header />

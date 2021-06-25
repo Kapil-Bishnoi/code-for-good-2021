@@ -76,6 +76,7 @@ export const SignupStudent = () => {
 			})
 			.then((res) => {
 				console.log(res);
+				history.push('/home');
 			})
 			.catch((err) => {
 				console.log(err);
@@ -94,9 +95,11 @@ export const SignupStudent = () => {
 				// get userId from firebase signing up
 				const userId = data.user.uid;
 				localStorage.setItem("userId", userId);
+				localStorage.setItem('role', 'student');
 
 				const studentUser = {
 					studentId: userId,
+					role: "student",
 					fullName: userInput.fullName,
 					emailId: userInput.emailId.trim(),
 					contactNumber: userInput.contactNumber,

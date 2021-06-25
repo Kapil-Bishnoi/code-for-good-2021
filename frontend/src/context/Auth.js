@@ -5,12 +5,12 @@ export const AuthContext = React.createContext();
 
 export const AuthProvider = ({ children }) => {
 	const [loading, setLoading] = useState(true);
-	const [currentUser, setCurrentUser] = useState(null);
+	const [firebaseUser, setFirebaseUser] = useState(null);
 
 	useEffect(() => {
 		fire.auth().onAuthStateChanged((user) => {
 			console.log(user);
-			setCurrentUser(user);
+			setFirebaseUser(user);
 			setLoading(false);
 		});
 	}, []);
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
 		return <p>Loading...</p>;
 	}
 	return (
-		<AuthContext.Provider value={{ currentUser }}>
+		<AuthContext.Provider value={{ firebaseUser }}>
 			{children}
 		</AuthContext.Provider>
 	);

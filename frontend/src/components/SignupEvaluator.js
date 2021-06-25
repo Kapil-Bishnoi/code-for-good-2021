@@ -73,6 +73,7 @@ export const SignupEvaluator = () => {
 			})
 			.then((res) => {
 				console.log(res);
+				history.push('/home');
 			})
 			.catch((err) => {
 				console.log(err);
@@ -91,9 +92,11 @@ export const SignupEvaluator = () => {
 				// get userId from firebase signing up
 				const userId = data.user.uid;
 				localStorage.setItem("userId", userId);
+				localStorage.setItem('role', 'evaluator');
 
 				const evaluatorUser = {
 					evaluatorId: userId,
+					role: "evaluator",
 					fullName: userInput.fullName,
 					emailId: userInput.emailId.trim(),
 					contactNumber: userInput.contactNumber,
