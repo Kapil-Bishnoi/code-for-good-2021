@@ -9,11 +9,12 @@ import { SignupStudent } from "./components/SignupStudent";
 import { Login } from "./components/Login";
 import { AuthContext } from "./context/Auth";
 import { HeaderAuth } from "./components/HeaderAuth";
+import { CreateProject } from "./components/CreateProject";
 
 function App() {
 	const { firebaseUser } = useContext(AuthContext);
-	const userRole = localStorage.getItem("role");
-	console.log(userRole);
+	const role = localStorage.getItem("role");
+	console.log(role);
 
 	if (!firebaseUser) {
 		return (
@@ -47,10 +48,14 @@ function App() {
 				<HeaderAuth />
 				<Switch>
 					<Route exact path="/home" component={() => <Home />} />
-					{userRole === "student" && (
-						<Route exact path="/createproject" component={() => <Home />} />
+					{role === "student" && (
+						<Route
+							exact
+							path="/createproject"
+							component={() => <CreateProject />}
+						/>
 					)}
-					{userRole !== "student" && (
+					{role !== "student" && (
 						<Route exact path="/selectprojects" component={() => <Home />} />
 					)}
 					<Route exact path="/projects" component={() => <Home />} />
