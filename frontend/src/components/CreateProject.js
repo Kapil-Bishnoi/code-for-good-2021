@@ -7,6 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -39,13 +40,14 @@ const useStyles = makeStyles((theme) => ({
 export const CreateProject = () => {
 	const classes = useStyles();
 	const [isJoinProject, setIsJoinProject] = React.useState(false);
-
-	const [userInput, setUserInput] = React.useState({
+	const initialUserInput = {
 		projectName: "",
 		projectDomain: "",
 		description: "",
 		projectId: "",
-	});
+	};
+
+	const [userInput, setUserInput] = React.useState(initialUserInput);
 	const [errorMessages, setErrorMessages] = React.useState({
 		projectName: "",
 		projectDomain: "",
@@ -56,6 +58,27 @@ export const CreateProject = () => {
 		e.preventDefault();
 		if (isValid()) {
 			console.log(userInput);
+			const newProject = {
+				projectName: userInput.projectName,
+				projectDomain: userInput.projectDomain,
+				description: userInput.description,
+			};
+			const studentId = localStorage.getItem("userId");
+			axios
+				.request(`https://cfg2021.herokuapp.com/projects/create/${studentId}`, {
+					method: "POST",
+					data: JSON.stringify(newProject),
+					headers: {
+						"Content-Type": "application/json",
+						"Access-Control-Allow-Origin": "*",
+					},
+				})
+				.then((res) => {
+					console.log(res);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
 		}
 	};
 
