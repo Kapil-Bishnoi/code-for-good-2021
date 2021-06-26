@@ -15,8 +15,12 @@ export const AuthProvider = ({ children }) => {
 		});
 	}, []);
 
-	if (loading) {
-		return <p>Loading...</p>;
+	if (loading === true) {
+		return (
+			<div style={{ display: "grid", placeContent: "center" }}>
+				<h1>Loading...</h1>
+			</div>
+		);
 	}
 	return (
 		<AuthContext.Provider value={{ firebaseUser }}>

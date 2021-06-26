@@ -10,6 +10,7 @@ import { Login } from "./components/Login";
 import { AuthContext } from "./context/Auth";
 import { HeaderAuth } from "./components/HeaderAuth";
 import { CreateProject } from "./components/CreateProject";
+import { Profile } from "./components/Profile";
 
 function App() {
 	const { firebaseUser } = useContext(AuthContext);
@@ -59,7 +60,7 @@ function App() {
 						<Route exact path="/selectprojects" component={() => <Home />} />
 					)}
 					<Route exact path="/projects" component={() => <Home />} />
-					<Route exact path="/profile" component={() => <Home />} />
+					<Route exact path="/profile" component={() => <Profile />} />
 					{/* <Redirect to="/home" /> */}
 				</Switch>
 			</div>
