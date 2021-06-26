@@ -43,6 +43,8 @@ export const HeaderAuth = () => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 	const history = useHistory();
+	const role = localStorage.getItem("role");
+	console.log(role);
 
 	const handleMenu = (event) => {
 		toggleOptionSwitch(event.currentTarget);
@@ -63,9 +65,9 @@ export const HeaderAuth = () => {
 
 	useEffect(() => {
 		const userId = localStorage.getItem("userId");
-		const role = localStorage.getItem("role");
+		const userRole = localStorage.getItem("role");
 		axios
-			.get(`https://cfg2021.herokuapp.com/${role}s/${userId}`)
+			.get(`https://cfg2021.herokuapp.com/${userRole}s/${userId}`)
 			.then((res) => {
 				// console.log(res);
 				const data = res.data.data;
@@ -114,12 +116,12 @@ export const HeaderAuth = () => {
 								<MenuItem onClick={() => handleButtonClick("/home")}>
 									Home
 								</MenuItem>
-								{user?.role === "student" && (
+								{role === "student" && (
 									<MenuItem onClick={() => handleButtonClick("/createproject")}>
 										Create/Join Project
 									</MenuItem>
 								)}
-								{user?.role !== "student" && (
+								{role !== "student" && (
 									<MenuItem
 										onClick={() => handleButtonClick("/selectprojects")}
 									>
@@ -144,7 +146,7 @@ export const HeaderAuth = () => {
 							>
 								HOME
 							</Button>
-							{user?.role === "student" && (
+							{role === "student" && (
 								<Button
 									variant="contained"
 									onClick={() => handleButtonClick("/createproject")}
@@ -153,7 +155,7 @@ export const HeaderAuth = () => {
 									Create/Join Project
 								</Button>
 							)}
-							{user?.role !== "student" && (
+							{role !== "student" && (
 								<Button
 									variant="contained"
 									onClick={() => handleButtonClick("/selectprojects")}

@@ -92,7 +92,6 @@ export const SignupEvaluator = () => {
 				// get userId from firebase signing up
 				const userId = data.user.uid;
 				localStorage.setItem("userId", userId);
-				localStorage.setItem('role', 'evaluator');
 
 				const evaluatorUser = {
 					evaluatorId: userId,
@@ -118,7 +117,7 @@ export const SignupEvaluator = () => {
 		if (isValid() === true) {
 			// if all the form inputs are valid
 			console.log(userInput);
-
+			localStorage.setItem('role', 'evaluator');
 			// sign up using firebase auth
 			firebaseEvaluatorSignup();
 

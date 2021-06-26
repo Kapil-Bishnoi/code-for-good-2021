@@ -93,7 +93,6 @@ export const SignupMentor = () => {
 				// get userId from firebase signing up
 				const userId = data.user.uid;
 				localStorage.setItem("userId", userId);
-				localStorage.setItem('role', 'mentor');
 
 				const mentorUser = {
 					mentorId: userId,
@@ -120,7 +119,7 @@ export const SignupMentor = () => {
 		if (isValid() === true) {
 			// if all the form inputs are valid
 			console.log(userInput);
-
+			localStorage.setItem('role', 'mentor');
 			// sign up using firebase auth
 			firebaseMentorSignup();
 

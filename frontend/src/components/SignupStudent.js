@@ -95,7 +95,6 @@ export const SignupStudent = () => {
 				// get userId from firebase signing up
 				const userId = data.user.uid;
 				localStorage.setItem("userId", userId);
-				localStorage.setItem('role', 'student');
 
 				const studentUser = {
 					studentId: userId,
@@ -125,6 +124,8 @@ export const SignupStudent = () => {
 		if (isValid() === true) {
 			// if all the form inputs are valid
 			console.log(userInput);
+
+			localStorage.setItem('role', 'student');
 
 			// sign up using firebase auth
 			firebaseStudentSignup();

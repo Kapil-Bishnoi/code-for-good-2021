@@ -54,7 +54,7 @@ export const CreateProject = () => {
 		projectId: "",
 	});
 
-	const handleSubmit = (e) => {
+	const handleCreateProject = (e) => {
 		e.preventDefault();
 		if (isValid()) {
 			console.log(userInput);
@@ -68,6 +68,28 @@ export const CreateProject = () => {
 				.request(`https://cfg2021.herokuapp.com/projects/create/${studentId}`, {
 					method: "POST",
 					data: JSON.stringify(newProject),
+					headers: {
+						"Content-Type": "application/json",
+						"Access-Control-Allow-Origin": "*",
+					},
+				})
+				.then((res) => {
+					console.log(res);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
+	const handleJoinProject = (e) => {
+		e.preventDefault();
+		if (isValid()) {
+			console.log(userInput);
+			const studentId = localStorage.getItem("userId");
+			axios
+				.request(`https://cfg2021.herokuapp.com/projects/join/${studentId}/${userInput.projectId}`, {
+					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
 						"Access-Control-Allow-Origin": "*",
@@ -136,7 +158,7 @@ export const CreateProject = () => {
 					{isJoinProject ? "Join Existing Project" : "Create New Project"}
 				</Typography>
 				{isJoinProject ? (
-					<form className={classes.form} onSubmit={handleSubmit} noValidate>
+					<form className={classes.form} onSubmit={handleJoinProject} noValidate>
 						<TextField
 							variant="outlined"
 							margin="normal"
@@ -158,7 +180,7 @@ export const CreateProject = () => {
 							variant="contained"
 							color="primary"
 							className={classes.submit}
-							onClick={handleSubmit}
+							onClick={handleJoinProject}
 						>
 							Join
 						</Button>
@@ -175,7 +197,7 @@ export const CreateProject = () => {
 						</Grid>
 					</form>
 				) : (
-					<form className={classes.form} noValidate>
+					<form className={classes.form} noValidate onSubmit={handleCreateProject}>
 						<TextField
 							variant="outlined"
 							margin="normal"
@@ -224,7 +246,7 @@ export const CreateProject = () => {
 							variant="contained"
 							color="primary"
 							className={classes.submit}
-							onClick={handleSubmit}
+							onClick={handleCreateProject}
 						>
 							Create
 						</Button>
