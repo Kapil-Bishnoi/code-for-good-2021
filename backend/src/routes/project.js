@@ -71,7 +71,7 @@ router.get("/name/:project_name", (req, res) => {
 		});
 });
 
-// creating project for a student
+// creating new project for a student
 router.post("/create/:student_id", (req, res) => {
 	const newProject = new Project({
 		projectId: uid(),
@@ -119,9 +119,10 @@ router.post("/create/:student_id", (req, res) => {
 						.save()
 						.then((saveRes) => {
 							console.log("created 5 Is");
+							//also send project data in response 
 							sendResponse({
 								response: res,
-								data: new5I,
+								data: {new5I, newProject},
 								error: null,
 							});
 						})
