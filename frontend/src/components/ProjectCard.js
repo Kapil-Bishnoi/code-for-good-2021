@@ -9,6 +9,8 @@ import Typography from "@material-ui/core/Typography";
 import FileCopyOutlinedIcon from "@material-ui/icons/FileCopyOutlined";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import { Divider } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 function Alert(props) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -37,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const ProjectCard = ({ proj }) => {
 	const classes = useStyles();
-
+	const history = useHistory();
 	const [openSnackbar, setOpen] = React.useState(false);
 	const handleClose = (event, reason) => {
 		if (reason === "clickaway") {
@@ -46,9 +48,21 @@ export const ProjectCard = ({ proj }) => {
 		setOpen(false);
 	};
 
+	const handleProjCardClick = () => {
+		history.push({
+			pathname: `/projects/${proj.projectId}`,
+			state: proj,
+		});
+	};
+
 	return (
-		<Card className={classes.root} key={proj.projectId}>
-			<CardActionArea className={classes.cardContent}>
+		<Card
+			raised
+			className={classes.root}
+			key={proj.projectId}
+			
+		>
+			<CardActionArea className={classes.cardContent} onClick={handleProjCardClick}>
 				<CardContent>
 					<Typography gutterBottom variant="h5" component="h2">
 						{proj.projectName}
@@ -72,6 +86,7 @@ export const ProjectCard = ({ proj }) => {
 					</Typography>
 				</CardContent>
 			</CardActionArea>
+			<Divider variant="middle" />
 			<CardActions className={classes.cardFooter}>
 				<Button
 					size="small"
@@ -93,7 +108,7 @@ export const ProjectCard = ({ proj }) => {
 						Project ID coppied!
 					</Alert>
 				</Snackbar>
-				<Button size="small" color="primary">
+				<Button size="small" color="primary" onClick={handleProjCardClick}>
 					Open
 				</Button>
 				{proj.isSubmited && proj.isEvaluated && (
@@ -102,7 +117,7 @@ export const ProjectCard = ({ proj }) => {
 					</Typography>
 				)}
 				{proj.isSubmited && !proj.isEvaluated && (
-					<Typography component="p" variant="body2">
+					<Typography style={{ color: "tomato" }} component="p" variant="body2">
 						Evaluation Pending
 					</Typography>
 				)}
