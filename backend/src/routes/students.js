@@ -1,6 +1,7 @@
 const express = require("express");
 const sendResponse = require("../lib/response");
 const Student = require("../models/studentUserSchema");
+const getProjectsFromStudentId = require('../lib/studentProjects');
 
 const router = express.Router(); // "/students" path
 
@@ -37,6 +38,33 @@ router.get("/:student_id", (req, res) => {
 			});
 		});
 });
+
+// fetch all projects under a student
+router.get('/projects/:student_id', (req,res) => {
+	Student.find({ studentId: req.params.student_id }, {_id: 0, projects: 1})
+		.then((data) => {
+			console.log(data);
+			if(data){
+				const dataObj = data[0];
+				const projectIds = dataObj.projects;  // array of objects with projectIds
+				getProjectsFromStudentId(projectIds)
+				.then((projects) => {
+					sendResponse({response: res, data: projects, error:null});
+				})
+				.catch((err) => {
+					sendResponse({response: res, data: null, error: {message: err.message} });
+				})
+			}
+		})
+		.catch((error) => {
+			console.log(error);
+			sendResponse({
+				response: res,
+				data: null,
+				error: `${error} error in finding student with this id`,
+			});
+		});
+})
 
 // post student to db
 router.post("/", (req, res) => {
