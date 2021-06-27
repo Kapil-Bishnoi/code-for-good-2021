@@ -42,6 +42,9 @@ const studentUserSchema = mongoose.Schema({        // creating schema for the th
     schoolName: {
         type: String,
         required: true
+    },
+    profileURL: {
+        type: String
     }
 })
 

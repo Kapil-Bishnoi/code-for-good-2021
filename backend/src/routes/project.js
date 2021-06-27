@@ -11,6 +11,7 @@ const {
 	i4Stage,
 	i5Stage,
 } = require("../shared/questions");
+const getTeamFromIds = require('../lib/getTeamfromIds');
 
 const router = express.Router();
 
@@ -71,6 +72,31 @@ router.get("/name/:project_name", (req, res) => {
 		});
 });
 
+// fetch team members of a project
+router.get("/team/:project_id", (req, res) => {
+	Project.find({ projectId: req.params.project_id }, { _id: 0, team: 1 })
+		.then((data) => {
+			if (data) {
+				const dataObj = data[0];
+				const teamIds = (dataObj) ? dataObj.team : [];
+				getTeamFromIds(teamIds)
+					.then((team) => {
+						sendResponse({ response: res, data: team, error: null });
+					})
+					.catch((err) => {
+						sendResponse({
+							response: res,
+							data: null,
+							error: { message: err.message },
+						});
+					});
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
+
 // creating new project for a student
 router.post("/create/:student_id", (req, res) => {
 	const newProject = new Project({
@@ -119,10 +145,10 @@ router.post("/create/:student_id", (req, res) => {
 						.save()
 						.then((saveRes) => {
 							console.log("created 5 Is");
-							//also send project data in response 
+							//also send project data in response
 							sendResponse({
 								response: res,
-								data: {new5I, newProject},
+								data: { new5I, newProject },
 								error: null,
 							});
 						})
