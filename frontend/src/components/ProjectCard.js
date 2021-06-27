@@ -7,45 +7,106 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import FileCopyOutlinedIcon from "@material-ui/icons/FileCopyOutlined";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
-const useStyles = makeStyles({
+function Alert(props) {
+	return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+const useStyles = makeStyles((theme) => ({
 	root: {
-		maxWidth: 345,
+		width: 345,
+		height: 345,
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "space-around",
+		margin: theme.spacing(2),
 	},
-});
+	cardContent: {
+		height: "85%",
+		overflow: "hidden",
+	},
+	description: {
+		overflow: "hidden",
+	},
+	domain: {
+		overflow: "hidden",
+	},
+}));
 
-export default function MediaCard() {
+export const ProjectCard = ({ proj }) => {
 	const classes = useStyles();
 
+	const [openSnackbar, setOpen] = React.useState(false);
+	const handleClose = (event, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
+		setOpen(false);
+	};
+
 	return (
-		<Card className={classes.root}>
-			<CardActionArea>
+		<Card className={classes.root} key={proj.projectId}>
+			<CardActionArea className={classes.cardContent}>
 				<CardContent>
 					<Typography gutterBottom variant="h5" component="h2">
-						Project Name
+						{proj.projectName}
 					</Typography>
 					<Typography
 						gutterBottom
 						style={{ color: "grey" }}
 						variant="h6"
 						component="h4"
+						className={classes.domain}
 					>
-						Project Domain
+						{proj.projectDomain}
 					</Typography>
-					<Typography variant="body2" color="textSecondary" component="p">
-						Lizards are a widespread group of squamate reptiles, with over 6,000
-						species, ranging across all continents except Antarctica
+					<Typography
+						className={classes.description}
+						variant="body2"
+						color="textSecondary"
+						component="p"
+					>
+						{proj.description}
 					</Typography>
 				</CardContent>
 			</CardActionArea>
-			<CardActions>
-				<Button size="small" variant="contained" color="primary">
+			<CardActions className={classes.cardFooter}>
+				<Button
+					size="small"
+					variant="contained"
+					color="primary"
+					onClick={() => {
+						navigator.clipboard.writeText(proj.projectId);
+						setOpen(true);
+					}}
+				>
 					<FileCopyOutlinedIcon /> Copy Project Id
 				</Button>
+				<Snackbar
+					open={openSnackbar}
+					autoHideDuration={1000}
+					onClose={handleClose}
+				>
+					<Alert onClose={handleClose} severity="success">
+						Project ID coppied!
+					</Alert>
+				</Snackbar>
 				<Button size="small" color="primary">
 					Open
 				</Button>
+				{proj.isSubmited && proj.isEvaluated && (
+					<Typography component="h4" variant="h6">
+						Score: <span style={{ color: "#3c52b2" }}>{proj.score}</span>
+					</Typography>
+				)}
+				{proj.isSubmited && !proj.isEvaluated && (
+					<Typography component="p" variant="body2">
+						Evaluation Pending
+					</Typography>
+				)}
 			</CardActions>
 		</Card>
 	);
-}
+};

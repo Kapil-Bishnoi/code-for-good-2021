@@ -8,7 +8,7 @@ import {
 	Typography,
 	Avatar,
 } from "@material-ui/core";
-import MediaCard from "./ProjectCard";
+import {ProjectCard} from "./ProjectCard";
 
 const useStyles = makeStyles((theme) => ({
 	userInfo: {
@@ -52,15 +52,26 @@ const useStyles = makeStyles((theme) => ({
 		marginTop: theme.spacing(2),
 		marginBottom: theme.spacing(1),
 	},
+	activeProjs: {
+		display: 'flex',
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+	},
+	submitedProjs: {
+		display: 'flex',
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+	}
 }));
 
 export const Profile = () => {
 	const classes = useStyles();
 	const [userData, setUserData] = useState(null);
-	console.log(userData);
-
+	const [userProjects, setUserProjects] = useState([]);
 	const [activeProjects, setActiveProjects] = useState([]);
 	const [submitedProjects, setSubmitedProjects] = useState([]);
+	console.log(userData);
+	console.log(userProjects);
 	console.log(activeProjects);
 	console.log(submitedProjects);
 
@@ -77,32 +88,25 @@ export const Profile = () => {
 				if (data && data.length) {
 					const userInfo = data[0];
 					setUserData(userInfo);
-
-					// fetching all the user projects
-					const projectIds = userInfo.projects;
-					projectIds.forEach((projId) => {
-						axios
-							.get(
-								`https://cfg2021.herokuapp.com/projects/id/${projId.projectId}`
-							)
-							.then((res) => {
-								console.log(res);
-								const data = res.data.data;
-								if (data && data.length) {
-									const newProject = data[0];
-									if(newProject.isSubmited === false){
-										setActiveProjects([...activeProjects, newProject]);
-									}
-									else{
-										setSubmitedProjects([...submitedProjects, newProject]);
-									}
-								}
-							})
-							.catch((err) => {
-								console.log(err);
-							});
-					});
 				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
+
+	useEffect(() => {
+		const userId = localStorage.getItem("userId");
+
+		// fetch current user projects
+		axios
+			.get(`https://cfg2021.herokuapp.com/students/projects/${userId}`)
+			.then((res) => {
+				// console.log(res);
+				const projectsList= res.data.data;
+				setUserProjects(projectsList);
+				setActiveProjects(projectsList?.filter((p) => p.isSubmited !== true));
+				setSubmitedProjects(projectsList?.filter((p) => p.isSubmited === true));
 			})
 			.catch((err) => {
 				console.log(err);
@@ -188,12 +192,25 @@ export const Profile = () => {
 						ACTIVE PROJECTS
 					</Typography>
 				</Grid>
-				<MediaCard />
+				<Container className={classes.activeProjs}>
+					{
+						activeProjects.map((proj) => {
+							return <ProjectCard proj={proj} />
+						})
+					}
+				</Container>
 				<Grid item xs={12} className={classes.ongoing}>
 					<Typography component="h2" variant="h5">
-						COMPLETED PROJECTS
+						SUBMITED PROJECTS
 					</Typography>
 				</Grid>
+				<Container className={classes.submitedProjs}>
+					{
+						submitedProjects.map((proj) => {
+							return <ProjectCard proj={proj} />
+						})
+					}
+				</Container>
 			</Grid>
 		</Container>
 	);
