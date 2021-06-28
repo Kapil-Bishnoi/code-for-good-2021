@@ -139,7 +139,7 @@ export const SignupStudent = () => {
 		const errors = {};
 		errors.fullName = userInput.fullName !== "" ? "" : "Required";
 		errors.emailId = userInput.emailId !== "" ? "" : "Required";
-		errors.password = userInput.password !== "" ? "" : "Required";
+		errors.password = userInput.password.length >= 6 ? "" : "Password should be atleast 6 charactes long";
 		errors.confirmPassword = userInput.confirmPassword !== "" ? "" : "Required";
 		errors.grade = userInput.grade !== "" ? "" : "Required";
 		errors.age = userInput.age !== "" ? "" : "Required";

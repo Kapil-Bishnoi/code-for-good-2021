@@ -132,7 +132,7 @@ export const SignupMentor = () => {
 		const errors = {};
 		errors.fullName = userInput.fullName !== "" ? "" : "Required";
 		errors.emailId = userInput.emailId !== "" ? "" : "Required";
-		errors.password = userInput.password !== "" ? "" : "Required";
+		errors.password = userInput.password.length >= 6 ? "" : "Password should be atleast 6 charactes long";
 		errors.confirmPassword = userInput.confirmPassword !== "" ? "" : "Required";
 		errors.designation = userInput.designation !== "" ? "" : "Required";
 		errors.contactNumber = userInput.contactNumber !== "" ? "" : "Required";

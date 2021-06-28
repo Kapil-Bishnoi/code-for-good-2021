@@ -97,7 +97,7 @@ export const ProjectCard = ({ proj, isActive }) => {
 				)
 				.then((res) => {
 					console.log(res);
-					setMsg(res.data.data);
+					setMsg("Successfully Removed!");
 					setOpen(true);
 				})
 				.catch((err) => {
@@ -117,7 +117,7 @@ export const ProjectCard = ({ proj, isActive }) => {
 				)
 				.then((res) => {
 					console.log(res);
-					setMsg(res.data.data);
+					setMsg("Successfully Removed!");
 					setOpen(true);
 				})
 				.catch((err) => {
@@ -182,17 +182,17 @@ export const ProjectCard = ({ proj, isActive }) => {
 						<FileCopyOutlinedIcon /> Copy Project Id
 					</Button>
 				)}
-				{role == "student" && proj.isSubmited && (
+				{role === "student" && proj.isSubmited && (
 					<Button fullWidth size="medium" variant="contained" color="primary">
 						View
 					</Button>
 				)}
-				{role == "mentor" && (
+				{role === "mentor" && (
 					<Button fullWidth size="large" variant="contained" color="primary">
 						View
 					</Button>
 				)}
-				{role == "evaluator" && (
+				{role === "evaluator" && (
 					<Button size="small" variant="contained" color="primary">
 						{proj.isEvaluated ? "View" : "Evaluate"}
 					</Button>

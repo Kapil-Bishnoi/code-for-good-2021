@@ -9,7 +9,6 @@ import Typography from "@material-ui/core/Typography";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Divider } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import axios from "axios";
 
@@ -40,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
 
 export const SelectProjCard = ({ proj }) => {
 	const classes = useStyles();
-	const history = useHistory();
 	const userRole = localStorage.getItem("role");
 	const [openSnackbar, setOpen] = React.useState(false);
 

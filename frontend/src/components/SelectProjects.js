@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { makeStyles, Container, Grid, Typography } from "@material-ui/core";
 import axios from "axios";
 import { SelectProjCard } from "./SelectProjCard";
-import { ProjectCard } from "./ProjectCard";
 
 const useStyles = makeStyles((theme) => ({
 	projects_page: {
@@ -26,7 +25,7 @@ export const SelectProjects = () => {
 	console.log(activeProjects);
 
 	useEffect(() => {
-		if (role == "mentor") {
+		if (role === "mentor") {
 			axios
 				.get(`https://cfg2021.herokuapp.com/projects/active`)
 				.then((res) => {
