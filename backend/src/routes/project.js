@@ -37,6 +37,17 @@ router.get("/active", (req, res) => {
 		});
 });
 
+// fetch all the projs those needs to be evaluated
+router.get("/forevaluation", (req, res) => {
+	Project.find({isSubmited: true, isEvaluated: false})
+		.then((data) => {
+			sendResponse({ response: res, data: data, error: null });
+		})
+		.catch((error) => {
+			sendResponse({ response: res, data: null, error: error });
+		});
+});
+
 // fetch project with projectId
 router.get("/id/:project_id", (req, res) => {
 	Project.find({ projectId: req.params.project_id })
