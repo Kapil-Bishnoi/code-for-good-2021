@@ -109,6 +109,7 @@ router.post("/create/:student_id", (req, res) => {
 				studentId: req.params.student_id,
 			},
 		],
+		mentors: [],
 		currentStage: 1,
 		isSubmited: false,
 		isEvaluated: false,

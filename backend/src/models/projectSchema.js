@@ -19,9 +19,12 @@ const projectSchema = mongoose.Schema({
 	team: {
 		type: Array,
 	},
-    currentStage: {
-        type: Number,
-    },
+	mentors: {
+		type: Array,
+	},
+	currentStage: {
+		type: Number,
+	},
 	isSubmited: {
 		type: Boolean,
 		required: true,

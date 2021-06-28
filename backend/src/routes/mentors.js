@@ -1,6 +1,7 @@
 const express = require("express");
 const sendResponse = require("../lib/response");
 const Mentor = require("../models/mentorUserSchema");
+const Project = require("../models/projectSchema");
 
 const router = express.Router();
 
@@ -50,7 +51,7 @@ router.post("/", (req, res) => {
 		districtAddress: req.body.districtAddress,
 		designation: req.body.designation,
 		assignedProjects: [],
-		profileURL: '',
+		profileURL: "",
 	});
 
 	Mentor.find({ emailId: newMentor.emailId })
@@ -71,6 +72,39 @@ router.post("/", (req, res) => {
 		})
 		.catch((error) => {
 			sendResponse({ response: res, data: null, error: error });
+		});
+});
+
+// select a project for mentoring
+router.post("/selectproject/:mentor_id/:project_id", (req, res) => {
+	const newProj = {
+		projectId: req.params.project_id,
+	};
+	Mentor.updateOne(
+		{ mentorId: req.params.mentor_id },
+		{ $addToSet: { assignedProjects: newProj } }
+	)
+		.then((mentorUpdate) => {
+			const newMentor = {
+				mentorId: req.params.mentor_id,
+			};
+			Project.updateOne(
+				{ projectId: req.params.project_id },
+				{ $addToSet: { mentors: newMentor } }
+			)
+				.then((projectUpdate) => {
+					sendResponse({
+						response: res,
+						data: { mentorUpdate, projectUpdate },
+						error: null,
+					});
+				})
+				.catch((err) => {
+					sendResponse({ response: res, data: null, error: err });
+				});
+		})
+		.catch((err) => {
+			sendResponse({ response: res, data: null, error: err });
 		});
 });
 

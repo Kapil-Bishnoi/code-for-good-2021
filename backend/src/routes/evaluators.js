@@ -46,8 +46,8 @@ router.post("/", (req, res) => {
 		emailId: req.body.emailId,
 		contactNumber: req.body.contactNumber,
 		designation: req.body.designation,
-		assignedProjects: [],   
-		profileURL: '',
+		assignedProjects: [],
+		profileURL: "",
 	});
 
 	Evaluator.find({ emailId: newEvaluator.emailId })
@@ -68,6 +68,27 @@ router.post("/", (req, res) => {
 		})
 		.catch((error) => {
 			sendResponse({ response: res, data: null, error: error });
+		});
+});
+
+// select a project for evaluation
+router.post("/selectproject/:evaluator_id/:project_id", (req, res) => {
+	const newProj = {
+		projectId: req.params.project_id,
+	};
+	Evaluator.updateOne(
+		{ evaluatorId: req.params.evaluator_id },
+		{ $addToSet: { assignedProjects: newProj } }
+	)
+		.then((evalUpdate) => {
+			sendResponse({
+				response: res,
+				data: evalUpdate,
+				error: null,
+			});
+		})
+		.catch((err) => {
+			sendResponse({ response: res, data: null, error: err });
 		});
 });
 
