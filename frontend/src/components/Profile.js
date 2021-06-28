@@ -8,7 +8,7 @@ import {
 	Typography,
 	Avatar,
 } from "@material-ui/core";
-import { ProjectCard } from "./ProjectCard";
+import {Projects} from './Projects';
 
 const useStyles = makeStyles((theme) => ({
 	userInfo: {
@@ -198,26 +198,7 @@ export const Profile = () => {
 						</Typography>
 					</Grid>
 				)}
-				<Grid item xs={12} className={classes.ongoing}>
-					<Typography component="h2" variant="h5">
-						ACTIVE PROJECTS
-					</Typography>
-				</Grid>
-				<Container className={classes.activeProjs}>
-					{activeProjects.map((proj) => {
-						return <ProjectCard key={proj.projectId} proj={proj} />;
-					})}
-				</Container>
-				<Grid item xs={12} className={classes.ongoing}>
-					<Typography component="h2" variant="h5">
-						SUBMITED PROJECTS
-					</Typography>
-				</Grid>
-				<Container className={classes.submitedProjs}>
-					{submitedProjects.map((proj) => {
-						return <ProjectCard key={proj.projectId} proj={proj} />;
-					})}
-				</Container>
+				<Projects />
 			</Grid>
 		</Container>
 	);

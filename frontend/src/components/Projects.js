@@ -51,8 +51,7 @@ export const Projects = () => {
 				.catch((err) => {
 					console.log(err);
 				});
-		}
-		else if(role !== 'student'){
+		} else if (role !== "student") {
 			// fetch current user projects
 			axios
 				.get(`https://cfg2021.herokuapp.com/${role}s/assignedprojs/${userId}`)
@@ -60,14 +59,19 @@ export const Projects = () => {
 					// console.log(res);
 					const projectsList = res.data.data;
 					setUserProjects(projectsList);
-					if(role === 'mentor'){ // for mentor we need unsubmited projs as active
-						setActiveProjects(projectsList?.filter((p) => p.isSubmited !== true));
+					if (role === "mentor") {
+						// for mentor we need unsubmited projs as active
+						setActiveProjects(
+							projectsList?.filter((p) => p.isSubmited !== true)
+						);
 						setSubmitedProjects(
 							projectsList?.filter((p) => p.isSubmited === true)
 						);
-					}
-					else { // for evaluator we need unevaluated as active
-						setActiveProjects(projectsList?.filter((p) => p.isEvaluated !== true));
+					} else {
+						// for evaluator we need unevaluated as active
+						setActiveProjects(
+							projectsList?.filter((p) => p.isEvaluated !== true)
+						);
 						setSubmitedProjects(
 							projectsList?.filter((p) => p.isEvaluated === true)
 						);
@@ -83,23 +87,29 @@ export const Projects = () => {
 		<Container className={classes.projects_page}>
 			<Grid item className={classes.heading}>
 				<Typography component="h1" variant="h4">
-					{(role === 'student')? "Your Active Projects": "Active Projects Under your Supervision"}
+					{role === "student"
+						? "Your Active Projects"
+						: "Active Projects Under your Supervision"}
 				</Typography>
 			</Grid>
 			<Container className={classes.activeProjs}>
-				{activeProjects.map((proj) => {
-					return <ProjectCard key={proj.projectId} proj={proj} />;
+				{activeProjects?.map((proj) => {
+					return (
+						<ProjectCard isActive={true} key={proj.projectId} proj={proj} />
+					);
 				})}
 			</Container>
 			<Divider variant="fullWidth" />
 			<Grid item className={classes.heading}>
-			<Typography component="h1" variant="h4">
-					{(role === 'student')? "Your Submited Projects": "History"}
+				<Typography component="h1" variant="h4">
+					{role === "student" ? "Your Submited Projects" : "History"}
 				</Typography>
 			</Grid>
 			<Container className={classes.submitedProjs}>
-				{submitedProjects.map((proj) => {
-					return <ProjectCard key={proj.projectId} proj={proj} />;
+				{submitedProjects?.map((proj) => {
+					return (
+						<ProjectCard isActive={false} key={proj.projectId} proj={proj} />
+					);
 				})}
 			</Container>
 		</Container>
