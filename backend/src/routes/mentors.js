@@ -146,7 +146,7 @@ router.post("/leaveproject/:mentor_id/:project_id", (req, res) => {
 	const deletedProj = {
 		projectId: req.params.project_id,
 	};
-	Mentor.deleteOne(
+	Mentor.updateOne(
 		{ mentorId: req.params.mentor_id },
 		{ $pull: { assignedProjects: deletedProj } }
 	)

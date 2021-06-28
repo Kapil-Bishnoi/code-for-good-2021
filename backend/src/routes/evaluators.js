@@ -129,7 +129,7 @@ router.post("/leaveproject/:evaluator_id/:project_id", (req, res) => {
 	const deletedProj = {
 		projectId: req.params.project_id,
 	};
-	Evaluator.deleteOne(
+	Evaluator.updateOne(
 		{ evaluatorId: req.params.evaluator_id },
 		{ $pull: { assignedProjects: deletedProj } }
 	)
