@@ -8,7 +8,7 @@ import {
 	Typography,
 	Avatar,
 } from "@material-ui/core";
-import {ProjectCard} from "./ProjectCard";
+import { ProjectCard } from "./ProjectCard";
 
 const useStyles = makeStyles((theme) => ({
 	userInfo: {
@@ -53,15 +53,15 @@ const useStyles = makeStyles((theme) => ({
 		marginBottom: theme.spacing(1),
 	},
 	activeProjs: {
-		display: 'flex',
-		flexDirection: 'row',
-		flexWrap: 'wrap',
+		display: "flex",
+		flexDirection: "row",
+		flexWrap: "wrap",
 	},
 	submitedProjs: {
-		display: 'flex',
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-	}
+		display: "flex",
+		flexDirection: "row",
+		flexWrap: "wrap",
+	},
 }));
 
 export const Profile = () => {
@@ -103,7 +103,7 @@ export const Profile = () => {
 			.get(`https://cfg2021.herokuapp.com/students/projects/${userId}`)
 			.then((res) => {
 				// console.log(res);
-				const projectsList= res.data.data;
+				const projectsList = res.data.data;
 				setUserProjects(projectsList);
 				setActiveProjects(projectsList?.filter((p) => p.isSubmited !== true));
 				setSubmitedProjects(projectsList?.filter((p) => p.isSubmited === true));
@@ -126,7 +126,7 @@ export const Profile = () => {
 						/>
 					</Grid>
 					<Grid container className={classes.basicInfo} item xs={12} sm={10}>
-						<Grid xs={12} className={classes.fullname}>
+						<Grid item xs={12} className={classes.fullname}>
 							<Typography component="h1" variant="h4">
 								{userData?.fullName}
 							</Typography>
@@ -157,47 +157,56 @@ export const Profile = () => {
 						</Typography>
 					</Grid>
 				)}
-				<Grid item xs={12} sm={4} className={classes.infoItem}>
-					<Typography component="h4" variant="h6">
-						Class: <span style={{ color: "#3c52b2" }}>{userData?.grade}th</span>
-					</Typography>
-				</Grid>
-				<Grid item xs={12} sm={4} className={classes.infoItem}>
-					<Typography component="h4" variant="h6">
-						Age: <span style={{ color: "#3c52b2" }}>{userData?.age}</span>
-					</Typography>
-				</Grid>
-				<Grid item xs={12} sm={4} className={classes.infoItem}>
-					<Typography component="h4" variant="h6">
-						State:{" "}
-						<span style={{ color: "#3c52b2" }}>{userData?.stateAddress}</span>
-					</Typography>
-				</Grid>
-				<Grid item xs={12} sm={4} className={classes.infoItem}>
-					<Typography component="h4" variant="h6">
-						District:{" "}
-						<span style={{ color: "#3c52b2" }}>
-							{userData?.districtAddress}
-						</span>
-					</Typography>
-				</Grid>
-				<Grid item xs={12} sm={4} className={classes.infoItem}>
-					<Typography component="h4" variant="h6">
-						School:{" "}
-						<span style={{ color: "#3c52b2" }}>{userData?.schoolName}</span>
-					</Typography>
-				</Grid>
+				{userData?.grade && (
+					<Grid item xs={12} sm={4} className={classes.infoItem}>
+						<Typography component="h4" variant="h6">
+							Class:{" "}
+							<span style={{ color: "#3c52b2" }}>{userData?.grade}th</span>
+						</Typography>
+					</Grid>
+				)}
+				{userData?.age && (
+					<Grid item xs={12} sm={4} className={classes.infoItem}>
+						<Typography component="h4" variant="h6">
+							Age: <span style={{ color: "#3c52b2" }}>{userData?.age}</span>
+						</Typography>
+					</Grid>
+				)}
+				{userData?.stateAddress && (
+					<Grid item xs={12} sm={4} className={classes.infoItem}>
+						<Typography component="h4" variant="h6">
+							State:{" "}
+							<span style={{ color: "#3c52b2" }}>{userData?.stateAddress}</span>
+						</Typography>
+					</Grid>
+				)}
+				{userData?.districtAddress && (
+					<Grid item xs={12} sm={4} className={classes.infoItem}>
+						<Typography component="h4" variant="h6">
+							District:{" "}
+							<span style={{ color: "#3c52b2" }}>
+								{userData?.districtAddress}
+							</span>
+						</Typography>
+					</Grid>
+				)}
+				{userData?.schoolName && (
+					<Grid item xs={12} sm={4} className={classes.infoItem}>
+						<Typography component="h4" variant="h6">
+							School:{" "}
+							<span style={{ color: "#3c52b2" }}>{userData?.schoolName}</span>
+						</Typography>
+					</Grid>
+				)}
 				<Grid item xs={12} className={classes.ongoing}>
 					<Typography component="h2" variant="h5">
 						ACTIVE PROJECTS
 					</Typography>
 				</Grid>
 				<Container className={classes.activeProjs}>
-					{
-						activeProjects.map((proj) => {
-							return <ProjectCard proj={proj} />
-						})
-					}
+					{activeProjects.map((proj) => {
+						return <ProjectCard key={proj.projectId} proj={proj} />;
+					})}
 				</Container>
 				<Grid item xs={12} className={classes.ongoing}>
 					<Typography component="h2" variant="h5">
@@ -205,11 +214,9 @@ export const Profile = () => {
 					</Typography>
 				</Grid>
 				<Container className={classes.submitedProjs}>
-					{
-						submitedProjects.map((proj) => {
-							return <ProjectCard proj={proj} />
-						})
-					}
+					{submitedProjects.map((proj) => {
+						return <ProjectCard key={proj.projectId} proj={proj} />;
+					})}
 				</Container>
 			</Grid>
 		</Container>

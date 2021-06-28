@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
 export const ProjectCard = ({ proj }) => {
 	const classes = useStyles();
 	const history = useHistory();
+	const role = localStorage.getItem("role");
 	const [openSnackbar, setOpen] = React.useState(false);
 	const handleClose = (event, reason) => {
 		if (reason === "clickaway") {
@@ -56,13 +57,11 @@ export const ProjectCard = ({ proj }) => {
 	};
 
 	return (
-		<Card
-			raised
-			className={classes.root}
-			key={proj.projectId}
-			
-		>
-			<CardActionArea className={classes.cardContent} onClick={handleProjCardClick}>
+		<Card raised className={classes.root} key={proj.projectId}>
+			<CardActionArea
+				className={classes.cardContent}
+				onClick={handleProjCardClick}
+			>
 				<CardContent>
 					<Typography gutterBottom variant="h5" component="h2">
 						{proj.projectName}
@@ -88,29 +87,45 @@ export const ProjectCard = ({ proj }) => {
 			</CardActionArea>
 			<Divider variant="middle" />
 			<CardActions className={classes.cardFooter}>
-				<Button
-					size="small"
-					variant="contained"
-					color="primary"
-					onClick={() => {
-						navigator.clipboard.writeText(proj.projectId);
-						setOpen(true);
-					}}
-				>
-					<FileCopyOutlinedIcon /> Copy Project Id
-				</Button>
-				<Snackbar
-					open={openSnackbar}
-					autoHideDuration={1000}
-					onClose={handleClose}
-				>
-					<Alert onClose={handleClose} severity="success">
-						Project ID coppied!
-					</Alert>
-				</Snackbar>
-				<Button size="small" color="primary" onClick={handleProjCardClick}>
-					Open
-				</Button>
+				{role === "student" && (
+					<>
+						<Button
+							size="small"
+							variant="contained"
+							color="primary"
+							onClick={() => {
+								navigator.clipboard.writeText(proj.projectId);
+								setOpen(true);
+							}}
+						>
+							<FileCopyOutlinedIcon /> Copy Project Id
+						</Button>
+						<Snackbar
+							open={openSnackbar}
+							autoHideDuration={1000}
+							onClose={handleClose}
+						>
+							<Alert onClose={handleClose} severity="success">
+								Project ID coppied!
+							</Alert>
+						</Snackbar>
+					</>
+				)}
+				{role == "mentor" && (
+					<Button fullWidth size="large" variant="contained" color="primary" >
+						View
+					</Button>
+				)}
+				{role == "evaluator" && (
+					<Button size="small" variant="contained" color="primary" >
+						{(proj.isEvaluated) ? "View": "Evaluate"}
+					</Button>
+				)}
+				{role === "student" && (
+					<Button size="small" color="primary" onClick={handleProjCardClick}>
+						Open
+					</Button>
+				)}
 				{proj.isSubmited && proj.isEvaluated && (
 					<Typography component="h4" variant="h6">
 						Score: <span style={{ color: "#3c52b2" }}>{proj.score}</span>
