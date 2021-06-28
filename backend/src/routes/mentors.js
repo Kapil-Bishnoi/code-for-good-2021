@@ -2,6 +2,7 @@ const express = require("express");
 const sendResponse = require("../lib/response");
 const Mentor = require("../models/mentorUserSchema");
 const Project = require("../models/projectSchema");
+const getProjectsFromStudentId = require("../lib/studentProjects");
 
 const router = express.Router();
 
@@ -28,6 +29,38 @@ router.get("/:mentor_id", (req, res) => {
 		.then((data) => {
 			console.log(data);
 			sendResponse({ response: res, data: data, error: null });
+		})
+		.catch((error) => {
+			console.log(error);
+			sendResponse({
+				response: res,
+				data: null,
+				error: `${error} error in finding mentor with this id`,
+			});
+		});
+});
+
+// fetch assigned projs to mentor
+router.get("/assignedprojs/:mentor_id", (req, res) => {
+	Mentor.find(
+		{ mentorId: req.params.mentor_id },
+		{ _id: 0, assignedProjects: 1 }
+	)
+		.then((data) => {
+			console.log(data);
+			if (data && data.length) {
+				const projectIds = data[0].assignedProjects;
+				getProjectsFromStudentId(projectIds)
+					.then((data) => {
+						sendResponse({ response: res, data: data, error: null });
+					})
+					.catch((err) => {
+						sendResponse({ response: res, data: null, error: err });
+					});
+			}
+			else{
+				throw "Mentor doesn't exist with this id.";
+			}
 		})
 		.catch((error) => {
 			console.log(error);
