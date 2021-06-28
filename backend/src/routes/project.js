@@ -11,7 +11,7 @@ const {
 	i4Stage,
 	i5Stage,
 } = require("../shared/questions");
-const getTeamFromIds = require('../lib/getTeamfromIds');
+const getTeamFromIds = require("../lib/getTeamfromIds");
 
 const router = express.Router();
 
@@ -28,7 +28,7 @@ router.get("/", (req, res) => {
 
 // fetch all the active projs means those are not submited yet
 router.get("/active", (req, res) => {
-	Project.find({isSubmited: false})
+	Project.find({ isSubmited: false })
 		.then((data) => {
 			sendResponse({ response: res, data: data, error: null });
 		})
@@ -39,7 +39,7 @@ router.get("/active", (req, res) => {
 
 // fetch all the projs those needs to be evaluated
 router.get("/forevaluation", (req, res) => {
-	Project.find({isSubmited: true, isEvaluated: false})
+	Project.find({ isSubmited: true, isEvaluated: false })
 		.then((data) => {
 			sendResponse({ response: res, data: data, error: null });
 		})
@@ -99,7 +99,7 @@ router.get("/team/:project_id", (req, res) => {
 		.then((data) => {
 			if (data) {
 				const dataObj = data[0];
-				const teamIds = (dataObj) ? dataObj.team : [];
+				const teamIds = dataObj ? dataObj.team : [];
 				getTeamFromIds(teamIds)
 					.then((team) => {
 						sendResponse({ response: res, data: team, error: null });
@@ -195,8 +195,7 @@ router.post("/join/:student_id/:project_id", (req, res) => {
 			if (!data || !data.length) {
 				// there no existing project for this id...probably typed wrong project id for joining
 				throw "there no existing project for this id...probably typed wrong project id for joining!";
-			}
-			else if(data[0].isSubmited === true){
+			} else if (data[0].isSubmited === true) {
 				throw "Cannot join the submited project!";
 			} else {
 				// add this student in team for this project
@@ -221,6 +220,59 @@ router.post("/join/:student_id/:project_id", (req, res) => {
 								sendResponse({
 									response: res,
 									data: "successfully joined",
+									error: null,
+								});
+							})
+							.catch((err) => {
+								sendResponse({
+									response: res,
+									data: null,
+									error: err,
+								});
+							});
+					})
+					.catch((err) => {
+						sendResponse({ response: res, data: null, error: err });
+					});
+			}
+		})
+		.catch((error) => {
+			sendResponse({ response: res, data: null, error: error });
+		});
+});
+
+// leaving a project by student
+router.post("/leave/:student_id/:project_id", (req, res) => {
+	Project.find({ projectId: req.params.project_id })
+		.then((data) => {
+			if (!data || !data.length) {
+				// there no existing project for this id...probably typed wrong project id for joining
+				throw "there no existing project for this id...probably typed wrong project id for joining!";
+			} else if (data[0].isSubmited === true) {
+				throw "Cannot leave the submited project!";
+			} else {
+				// remove this student from team for this project
+				const newTeamMate = {
+					studentId: req.params.student_id,
+				};
+				Project.updateOne(
+					{ projectId: req.params.project_id },
+					{ $pull: { team: newTeamMate } }
+				)
+					.then((updateRes) => {
+						// now we need to remove this project under that stundent too
+						const leaveProj = {
+							projectId: req.params.project_id,
+						};
+
+						Student.updateOne(
+							{ studentId: req.params.student_id },
+							{ $pull: { projects: leaveProj } }
+						)
+							.then((addRes) => {
+								sendResponse({
+									response: res,
+									data: "successfully removed",
 									error: null,
 								});
 							})
