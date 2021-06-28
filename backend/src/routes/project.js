@@ -195,6 +195,9 @@ router.post("/join/:student_id/:project_id", (req, res) => {
 			if (!data || !data.length) {
 				// there no existing project for this id...probably typed wrong project id for joining
 				throw "there no existing project for this id...probably typed wrong project id for joining!";
+			}
+			else if(data[0].isSubmited === true){
+				throw "Cannot join the submited project!";
 			} else {
 				// add this student in team for this project
 				const newTeamMate = {
