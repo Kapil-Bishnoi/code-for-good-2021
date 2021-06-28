@@ -124,4 +124,25 @@ router.post("/selectproject/:evaluator_id/:project_id", (req, res) => {
 		});
 });
 
+// leave the project from evaluating
+router.post("/leaveproject/:evaluator_id/:project_id", (req, res) => {
+	const deletedProj = {
+		projectId: req.params.project_id,
+	};
+	Evaluator.deleteOne(
+		{ evaluatorId: req.params.evaluator_id },
+		{ $pull: { assignedProjects: deletedProj } }
+	)
+		.then((evalUpdate) => {
+			sendResponse({
+				response: res,
+				data: evalUpdate,
+				error: null,
+			});
+		})
+		.catch((err) => {
+			sendResponse({ response: res, data: null, error: err });
+		});
+});
+
 module.exports = router;

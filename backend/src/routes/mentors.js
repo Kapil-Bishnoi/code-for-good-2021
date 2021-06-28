@@ -141,4 +141,37 @@ router.post("/selectproject/:mentor_id/:project_id", (req, res) => {
 		});
 });
 
+// leave the project from mentoring
+router.post("/leaveproject/:mentor_id/:project_id", (req, res) => {
+	const deletedProj = {
+		projectId: req.params.project_id,
+	};
+	Mentor.deleteOne(
+		{ mentorId: req.params.mentor_id },
+		{ $pull: { assignedProjects: deletedProj } }
+	)
+		.then((mentorUpdate) => {
+			const leaveMentor = {
+				mentorId: req.params.mentor_id,
+			};
+			Project.updateOne(
+				{ projectId: req.params.project_id },
+				{ $pull: { mentors: leaveMentor } }
+			)
+				.then((projectUpdate) => {
+					sendResponse({
+						response: res,
+						data: { mentorUpdate, projectUpdate },
+						error: null,
+					});
+				})
+				.catch((err) => {
+					sendResponse({ response: res, data: null, error: err });
+				});
+		})
+		.catch((err) => {
+			sendResponse({ response: res, data: null, error: err });
+		});
+});
+
 module.exports = router;
