@@ -17,8 +17,18 @@ const router = express.Router();
 
 // fetch all the projects
 router.get("/", (req, res) => {
-	console.log("/projects");
 	Project.find({})
+		.then((data) => {
+			sendResponse({ response: res, data: data, error: null });
+		})
+		.catch((error) => {
+			sendResponse({ response: res, data: null, error: error });
+		});
+});
+
+// fetch all the active projs means those are not submited yet
+router.get("/active", (req, res) => {
+	Project.find({isSubmited: false})
 		.then((data) => {
 			sendResponse({ response: res, data: data, error: null });
 		})
