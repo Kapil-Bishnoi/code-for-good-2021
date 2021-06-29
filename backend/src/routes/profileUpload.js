@@ -10,7 +10,7 @@ router.post("/update/:role/:id", (req, res) => {
 	if (req.params.role === "student") {
 		Student.updateOne(
 			{ studentId: req.params.id },
-			{ profileURL: res.body.imageURL }
+			{ profileURL: req.body.imageURL }
 		)
 			.then((updateRes) => {
 				sendResponse({
