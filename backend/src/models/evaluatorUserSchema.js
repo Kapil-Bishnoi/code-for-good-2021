@@ -28,6 +28,9 @@ const evaluatorUserSchema = mongoose.Schema({
 	assignedProjects: {
 		type: Array,
 	},
+    profileURL: {
+        type: String
+    }
 });
 
 const Evaluator = mongoose.model("evaluator_users", evaluatorUserSchema); // collection: evaluator_users

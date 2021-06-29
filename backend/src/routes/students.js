@@ -46,7 +46,7 @@ router.get("/projects/:student_id", (req, res) => {
 			// console.log(data);
 			if (data) {
 				const dataObj = data[0];
-				const projectIds = (dataObj) ? dataObj.projects : []; // array of objects with projectIds
+				const projectIds = dataObj ? dataObj.projects : []; // array of objects with projectIds
 				getProjectsFromStudentId(projectIds)
 					.then((projects) => {
 						sendResponse({ response: res, data: projects, error: null });
@@ -84,7 +84,7 @@ router.post("/", (req, res) => {
 		districtAddress: req.body.districtAddress,
 		schoolName: req.body.schoolName,
 		projects: [],
-		profileURL: '',
+		profileURL: "",
 	});
 
 	Student.find({ emailId: newStudent.emailId })

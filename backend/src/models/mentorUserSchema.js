@@ -36,6 +36,9 @@ const mentorUserSchema = mongoose.Schema({
 	assignedProjects: {
 		type: Array,
 	},
+    profileURL: {
+        type: String
+    }
 });
 
 const Mentor = mongoose.model("mentor_users", mentorUserSchema); // collection: mentor_users
