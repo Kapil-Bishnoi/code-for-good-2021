@@ -1,16 +1,17 @@
 const Evaluator = require("../models/evaluatorUserSchema");
 const Student = require("../models/studentUserSchema");
-const Mentor = require('../models/mentorUserSchema');
+const Mentor = require("../models/mentorUserSchema");
 
 // get all users from list of userIDs
-const getTeamFromIds = ({teamIds, type}) => {
+const getTeamFromIds = ({ teamIds, type }) => {
 	return new Promise((resolve) => {
-		const teamMembers = [];
-		for (let i = 0; i < teamIds.length; i++) {
-			teamMembers.push(teamIds[i].studentId);
-		}
-		console.log(teamMembers);
-		if(type === 'students'){
+		if (type === "students") {
+			const teamMembers = [];
+			for (let i = 0; i < teamIds.length; i++) {
+				teamMembers.push(teamIds[i].studentId);
+			}
+			console.log(teamMembers);
+
 			Student.find(
 				{
 					studentId: {
@@ -32,8 +33,13 @@ const getTeamFromIds = ({teamIds, type}) => {
 				.catch((err) => {
 					resolve(err);
 				});
-		}
-		else if(type === "mentors"){
+		} else if (type === "mentors") {
+			const teamMembers = [];
+			for (let i = 0; i < teamIds.length; i++) {
+				teamMembers.push(teamIds[i].mentorId);
+			}
+			console.log(teamMembers);
+
 			Mentor.find(
 				{
 					mentorId: {
@@ -55,8 +61,13 @@ const getTeamFromIds = ({teamIds, type}) => {
 				.catch((err) => {
 					resolve(err);
 				});
-		}
-		else {
+		} else {
+			const teamMembers = [];
+			for (let i = 0; i < teamIds.length; i++) {
+				teamMembers.push(teamIds[i].evaluatorId);
+			}
+			console.log(teamMembers);
+
 			Evaluator.find(
 				{
 					evaluatorId: {

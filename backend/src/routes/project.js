@@ -95,14 +95,14 @@ router.get("/name/:project_name", (req, res) => {
 
 // fetch team members of a project
 router.get("/team/:project_id", (req, res) => {
-	Project.find({ projectId: req.params.project_id }, { _id: 0, team: 1 })
+	Project.find({ projectId: req.params.project_id }, { _id: 0, team: 1, mentors:1, evaluators: 1 })
 		.then((data) => {
 			if (data) {
+				// console.log(data);
 				const dataObj = data[0];
 				const teamIds = dataObj ? dataObj.team : [];
 				const mentorIds = dataObj ? dataObj.mentors : [];
 				const evalIds = dataObj ? dataObj.evaluators : [];
-
 				getTeamFromIds({ teamIds: teamIds, type: "students" })
 					.then((team) => {
 						getTeamFromIds({ teamIds: mentorIds, type: "mentors" })
@@ -128,6 +128,7 @@ router.get("/team/:project_id", (req, res) => {
 									});
 							})
 							.catch((err) => {
+								// console.log(err);
 								sendResponse({
 									response: res,
 									data: { team: team, mentors: [], evaluators: [] },
