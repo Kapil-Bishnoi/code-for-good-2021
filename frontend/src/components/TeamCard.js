@@ -56,8 +56,9 @@ export const TeamCard = ({ member }) => {
 			<Grid className={classes.profileImage} item xs={12}>
 				<Avatar
 					className={classes.profileAvatar}
-					alt="profile"
-					src="https://scontent-del1-1.xx.fbcdn.net/v/t1.6435-9/138997864_842154576352818_1406178736804240892_n.jpg?_nc_cat=106&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=FgDVRvQC6BMAX-VZ-Fk&_nc_ht=scontent-del1-1.xx&oh=6f9293b62b81210291fa79207fcb52fb&oe=60DCF6DB"
+					alt={member.fullName}
+					src={member.profileURL}
+					//src="https://scontent-del1-1.xx.fbcdn.net/v/t1.6435-9/138997864_842154576352818_1406178736804240892_n.jpg?_nc_cat=106&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=FgDVRvQC6BMAX-VZ-Fk&_nc_ht=scontent-del1-1.xx&oh=6f9293b62b81210291fa79207fcb52fb&oe=60DCF6DB"
 				/>
 			</Grid>
 			<Grid item xs={12} className={classes.name}>

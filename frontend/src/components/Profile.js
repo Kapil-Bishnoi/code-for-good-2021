@@ -8,14 +8,19 @@ import {
 	Typography,
 	Avatar,
 } from "@material-ui/core";
-import {Projects} from './Projects';
+import { Projects } from "./Projects";
+import { Input, IconButton, Button } from "@material-ui/core";
+import { PhotoCamera } from "@material-ui/icons";
+import { storage } from "../firebase";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
 	userInfo: {
 		display: "flex",
-		flexDirection: "column",
+		flexDirection: "row",
 		justifyContent: "center",
-		alignItems: "flex-start",
+		alignItems: "center",
+		marginBottom: theme.spacing(4),
 	},
 	profilePage: {
 		marginTop: theme.spacing(2),
@@ -23,8 +28,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	profileImage: {
 		display: "flex",
+		flexDirection: "column",
 		alignItems: "center",
-		justifyContent: "flex-end",
+		justifyContent: "center",
 	},
 	profileAvatar: {
 		height: theme.spacing(20),
@@ -32,10 +38,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	basicInfo: {
 		display: "flex",
-		flexDirection: "row",
-		alignItems: "center",
+		flexDirection: "column",
+		alignItems: "flex-start",
 		justifyContent: "center",
-		marginLeft: theme.spacing(4),
 	},
 	role: {
 		color: "grey",
@@ -62,18 +67,21 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: "row",
 		flexWrap: "wrap",
 	},
+	avatarInput: {
+		display: "none",
+	},
+	uploadBtn: {
+		height: theme.spacing(20),
+		width: theme.spacing(20),
+		backgroundColor: "#c9c7e0",
+	},
 }));
 
 export const Profile = () => {
 	const classes = useStyles();
+	const id = localStorage.getItem("userId");
+	const userRole = localStorage.getItem("role");
 	const [userData, setUserData] = useState(null);
-	const [userProjects, setUserProjects] = useState([]);
-	const [activeProjects, setActiveProjects] = useState([]);
-	const [submitedProjects, setSubmitedProjects] = useState([]);
-	console.log(userData);
-	console.log(userProjects);
-	console.log(activeProjects);
-	console.log(submitedProjects);
 
 	useEffect(() => {
 		const userId = localStorage.getItem("userId");
@@ -95,45 +103,118 @@ export const Profile = () => {
 			});
 	}, []);
 
-	useEffect(() => {
-		const userId = localStorage.getItem("userId");
-
-		// fetch current user projects
-		axios
-			.get(`https://cfg2021.herokuapp.com/students/projects/${userId}`)
-			.then((res) => {
-				// console.log(res);
-				const projectsList = res.data.data;
-				setUserProjects(projectsList);
-				setActiveProjects(projectsList?.filter((p) => p.isSubmited !== true));
-				setSubmitedProjects(projectsList?.filter((p) => p.isSubmited === true));
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, []);
+	const [imageURL, setImageURL] = useState("");
+	const handleImageSubmit = (e) => {
+		if (e.target.files[0]) {
+			const imageFile = e.target.files[0];
+			console.log(imageFile);
+			const uploadTask = storage.ref(`profileImages/${id}`).put(imageFile);
+			uploadTask.on(
+				"state_changed",
+				(snapshot) => {},
+				(error) => {
+					console.log(error);
+				},
+				() => {
+					storage
+						.ref("profileImages")
+						.child(id)
+						.getDownloadURL()
+						.then((url) => {
+							console.log(url);
+							setImageURL(url);
+							const urlObj = {
+								imageURL: url,
+							};
+							axios
+								.request(
+									`https://cfg2021.herokuapp.com/profile/update/${userRole}/${id}`,
+									{
+										method: "POST",
+										data: JSON.stringify(urlObj),
+										headers: {
+											"Content-Type": "application/json",
+											"Access-Control-Allow-Origin": "*",
+										},
+									}
+								)
+								.then((res) => {
+									console.log(res);
+								})
+								.catch((err) => {
+									console.log(err);
+								});
+						});
+				}
+			);
+		}
+	};
 
 	return (
 		<Container component="main" maxWidth="lg">
 			<CssBaseline />
 			<Grid container item className={classes.profilePage}>
 				<Grid container item className={classes.userInfo}>
-					<Grid item xs={12} sm={2} className={classes.profileImage}>
-						<Avatar
-							src="https://scontent-del1-1.xx.fbcdn.net/v/t1.6435-9/138997864_842154576352818_1406178736804240892_n.jpg?_nc_cat=106&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=FgDVRvQC6BMAX-VZ-Fk&_nc_ht=scontent-del1-1.xx&oh=6f9293b62b81210291fa79207fcb52fb&oe=60DCF6DB"
-							alt="profile image"
-							className={classes.profileAvatar}
+					<Grid item xs={12} sm={3} className={classes.profileImage}>
+						<Input
+							accept="image/*"
+							className={classes.avatarInput}
+							id="icon-button-file"
+							type="file"
+							onChange={handleImageSubmit}
 						/>
+						<label htmlFor="icon-button-file">
+							<IconButton
+								color="primary"
+								aria-label="upload picture"
+								component="span"
+								className={classes.uploadBtn}
+							>
+								{!userData?.profileURL && !imageURL && (
+									<span>
+										<PhotoCamera /> Upload
+									</span>
+								)}
+
+								{(userData?.profileURL || imageURL) && (
+									<Avatar
+										//src={userData?.profileURL}
+										src={imageURL || userData?.profileURL}
+										alt={userData?.fullName}
+										className={classes.profileAvatar}
+									/>
+								)}
+							</IconButton>
+						</label>
+						{(userData?.profileURL || imageURL) && (
+							<>
+								<Input
+									accept="image/*"
+									className={classes.avatarInput}
+									id="icon-button-file"
+									type="file"
+									onChange={handleImageSubmit}
+								/>
+								<label htmlFor="icon-button-file">
+									<Button
+										style={{ marginTop: "8px" }}
+										variant="outlined"
+										color="primary"
+										component="span"
+									>
+										Upload
+									</Button>
+								</label>
+							</>
+						)}
 					</Grid>
-					<Grid container className={classes.basicInfo} item xs={12} sm={10}>
-						<Grid item xs={12} className={classes.fullname}>
-							<Typography component="h1" variant="h4">
-								{userData?.fullName}
-							</Typography>
-							<Typography className={classes.role} component="h4" variant="h6">
-								{userData?.role}
-							</Typography>
-						</Grid>
+					<Grid container className={classes.basicInfo} item xs={12} sm={9}>
+						<Typography component="h1" variant="h4">
+							{userData?.fullName}
+						</Typography>
+						<Typography className={classes.role} component="h4" variant="h6">
+							{userData?.role}
+						</Typography>
 					</Grid>
 				</Grid>
 				<Grid item xs={12} className={classes.personalInfo}>
@@ -200,6 +281,7 @@ export const Profile = () => {
 				)}
 				<Projects />
 			</Grid>
+			
 		</Container>
 	);
 };

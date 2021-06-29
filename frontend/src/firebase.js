@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import 'firebase/storage';
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
@@ -20,4 +21,7 @@ var firebaseConfig = {
 
 // Initialize Firebase
 export const fire = firebase.initializeApp(firebaseConfig);
+
+export const storage = firebase.storage();
+
 firebase.analytics();

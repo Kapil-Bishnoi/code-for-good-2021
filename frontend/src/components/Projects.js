@@ -28,9 +28,6 @@ export const Projects = () => {
 	const [userProjects, setUserProjects] = useState([]);
 	const [activeProjects, setActiveProjects] = useState([]);
 	const [submitedProjects, setSubmitedProjects] = useState([]);
-	console.log(userProjects);
-	console.log(activeProjects);
-	console.log(submitedProjects);
 
 	useEffect(() => {
 		const userId = localStorage.getItem("userId");
