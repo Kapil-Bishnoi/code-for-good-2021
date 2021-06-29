@@ -6,11 +6,11 @@ const Student = require("../models/studentUserSchema");
 
 const router = express.Router();
 
-router.post("/update/:role/:id/:imageURL", (req, res) => {
+router.post("/update/:role/:id", (req, res) => {
 	if (req.params.role === "student") {
 		Student.updateOne(
 			{ studentId: req.params.id },
-			{ profileURL: res.params.imageURL }
+			{ profileURL: res.body.imageURL }
 		)
 			.then((updateRes) => {
 				sendResponse({
