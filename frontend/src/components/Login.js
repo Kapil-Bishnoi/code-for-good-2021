@@ -99,6 +99,10 @@ export const Login = () => {
 							const userId = data.user.uid;
 							localStorage.setItem("userId", userId);
 							localStorage.setItem("role", userInput.role);
+
+							// clearing form inputs
+							setUserInput(initialUserInput);
+							
 							history.push("/home");
 						})
 						.catch((err) => {
@@ -120,9 +124,6 @@ export const Login = () => {
 
 			// sign up using firebase auth
 			firebaseLogin();
-
-			// clearing form inputs
-			setUserInput(initialUserInput);
 		}
 	};
 

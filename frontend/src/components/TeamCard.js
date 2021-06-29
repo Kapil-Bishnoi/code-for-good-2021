@@ -4,13 +4,13 @@ import { Grid, Avatar, Typography } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 const useStyles = makeStyles((theme) => ({
 	root: {
-		width: 300,
+		width: 200,
 		display: "flex",
 		flexDirection: "column",
 		"&:hover": {
 			cursor: "pointer",
 		},
-        margin: theme.spacing(2),
+		margin: theme.spacing(2),
 	},
 	profileImage: {
 		display: "flex",
@@ -19,8 +19,8 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(1),
 	},
 	profileAvatar: {
-		height: theme.spacing(14),
-		width: theme.spacing(14),
+		height: theme.spacing(10),
+		width: theme.spacing(10),
 	},
 	name: {
 		display: "flex",
@@ -52,7 +52,7 @@ export const TeamCard = ({ member }) => {
 	const classes = useStyles();
 
 	return (
-		<Card raised className={classes.root} >
+		<Card raised className={classes.root}>
 			<Grid className={classes.profileImage} item xs={12}>
 				<Avatar
 					className={classes.profileAvatar}
@@ -61,20 +61,28 @@ export const TeamCard = ({ member }) => {
 				/>
 			</Grid>
 			<Grid item xs={12} className={classes.name}>
-				<Typography component="h4" variant="h5">
+				<Typography component="p" variant="body1">
 					{member.fullName}
 				</Typography>
 			</Grid>
 			<Grid item xs={12} className={classes.email}>
-				<Typography component="h5" variant="h6">
+				<Typography component="p" variant="body2">
 					{member.emailId}
 				</Typography>
 			</Grid>
 			<Grid item xs={12} className={classes.school}>
-				<Typography component="p" variant="body2">
-					<span>School: </span>
-					{member.schoolName}
-				</Typography>
+				{member.schoolName && (
+					<Typography component="p" variant="body2">
+						<span>School: </span>
+						{member.schoolName}
+					</Typography>
+				)}
+				{member.contactNumber && (
+					<Typography component="p" variant="body2">
+						<span>Contact: </span>
+						{member.contactNumber}
+					</Typography>
+				)}
 			</Grid>
 		</Card>
 	);

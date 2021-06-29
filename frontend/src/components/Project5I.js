@@ -34,16 +34,19 @@ const useStyles = makeStyles((theme) => ({
 		marginTop: theme.spacing(2),
 		color: "#3c52b2",
 	},
+	allMembers: {
+		display: "flex",
+	},
 }));
 
 export const Project5I = () => {
 	const classes = useStyles();
 	const location = useLocation();
-
+	const role = localStorage.getItem("role");
 	const [projectInfo, setProjectInfo] = useState(location.state);
 	const [team, setTeam] = useState([]);
-	console.log(projectInfo);
-	console.log(team);
+	const [mentorsTeam, setMentorsTeam] = useState([]);
+	const [evalTeam, setEvalTeam] = useState([]);
 
 	useEffect(() => {
 		axios
@@ -52,8 +55,16 @@ export const Project5I = () => {
 			)
 			.then((res) => {
 				console.log(res);
-				const teamList = res.data.data;
-				setTeam(teamList);
+				const dataObj = res.data.data;
+				if (dataObj?.team) {
+					setTeam(dataObj?.team);
+				}
+				if (dataObj?.mentors) {
+					setMentorsTeam(dataObj?.mentors);
+				}
+				if (dataObj?.evaluators) {
+					setEvalTeam(dataObj?.evaluators);
+				}
 			})
 			.catch((err) => {
 				console.log(err);
@@ -76,19 +87,77 @@ export const Project5I = () => {
 					</Typography>
 				</Grid>
 			</Grid>
-			<Grid item xs={6} className={classes.teamTitle}>
-				<Typography
-					style={{ textDecorationLine: "underline" }}
-					component="h2"
-					variant="h5"
+			<Container className={classes.allMembers}>
+				<Grid
+					item
+					xs={role === "student" ? 6 : 4}
+					className={classes.teamTitle}
 				>
-					Team Members:
-				</Typography>
-			</Grid>
-			<Container className={classes.teamMembers}>
-				{team.map((member) => {
-					return <TeamCard key={member.studentId} className={classes.member} member={member} />;
-				})}
+					<Typography
+						style={{ textDecorationLine: "underline" }}
+						component="h2"
+						variant="h5"
+					>
+						Team Members:
+					</Typography>
+					<Container className={classes.teamMembers}>
+						{team?.map((member) => {
+							return (
+								<TeamCard
+									key={member.studentId}
+									className={classes.member}
+									member={member}
+								/>
+							);
+						})}
+					</Container>
+				</Grid>
+				<Grid
+					xs={role === "student" ? 6 : 4}
+					item
+					className={classes.teamTitle}
+				>
+					<Typography
+						style={{ textDecorationLine: "underline" }}
+						component="h2"
+						variant="h5"
+					>
+						Mentors:
+					</Typography>
+					<Container className={classes.teamMembers}>
+						{mentorsTeam?.map((member) => {
+							return (
+								<TeamCard
+									key={member.mentorId}
+									className={classes.member}
+									member={member}
+								/>
+							);
+						})}
+					</Container>
+				</Grid>
+				{role !== "student" && (
+					<Grid item className={classes.teamTitle}>
+						<Typography
+							style={{ textDecorationLine: "underline" }}
+							component="h2"
+							variant="h5"
+						>
+							Evaluators:
+						</Typography>
+						<Container className={classes.teamMembers}>
+							{evalTeam?.map((member) => {
+								return (
+									<TeamCard
+										key={member.evaluatorId}
+										className={classes.member}
+										member={member}
+									/>
+								);
+							})}
+						</Container>
+					</Grid>
+				)}
 			</Container>
 			<Divider style={{ marginTop: "20px" }} />
 			<Grid item xs={12} className={classes.title2}>

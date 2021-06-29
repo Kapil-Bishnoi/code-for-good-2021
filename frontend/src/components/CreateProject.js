@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -39,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const CreateProject = () => {
 	const classes = useStyles();
+	const history = useHistory();
 	const [isJoinProject, setIsJoinProject] = React.useState(false);
 	const initialUserInput = {
 		projectName: "",
@@ -74,7 +76,8 @@ export const CreateProject = () => {
 					},
 				})
 				.then((res) => {
-					console.log(res);
+					setUserInput(initialUserInput);
+					history.push("/projects");
 				})
 				.catch((err) => {
 					console.log(err);
@@ -88,15 +91,19 @@ export const CreateProject = () => {
 			console.log(userInput);
 			const studentId = localStorage.getItem("userId");
 			axios
-				.request(`https://cfg2021.herokuapp.com/projects/join/${studentId}/${userInput.projectId}`, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"Access-Control-Allow-Origin": "*",
-					},
-				})
+				.request(
+					`https://cfg2021.herokuapp.com/projects/join/${studentId}/${userInput.projectId}`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Access-Control-Allow-Origin": "*",
+						},
+					}
+				)
 				.then((res) => {
-					console.log(res);
+					setUserInput(initialUserInput);
+					history.push("/projects");
 				})
 				.catch((err) => {
 					console.log(err);
@@ -158,7 +165,11 @@ export const CreateProject = () => {
 					{isJoinProject ? "Join Existing Project" : "Create New Project"}
 				</Typography>
 				{isJoinProject ? (
-					<form className={classes.form} onSubmit={handleJoinProject} noValidate>
+					<form
+						className={classes.form}
+						onSubmit={handleJoinProject}
+						noValidate
+					>
 						<TextField
 							variant="outlined"
 							margin="normal"
@@ -197,7 +208,11 @@ export const CreateProject = () => {
 						</Grid>
 					</form>
 				) : (
-					<form className={classes.form} noValidate onSubmit={handleCreateProject}>
+					<form
+						className={classes.form}
+						noValidate
+						onSubmit={handleCreateProject}
+					>
 						<TextField
 							variant="outlined"
 							margin="normal"
