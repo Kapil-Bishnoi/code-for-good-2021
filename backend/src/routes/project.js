@@ -100,9 +100,40 @@ router.get("/team/:project_id", (req, res) => {
 			if (data) {
 				const dataObj = data[0];
 				const teamIds = dataObj ? dataObj.team : [];
-				getTeamFromIds(teamIds)
+				const mentorIds = dataObj ? dataObj.mentors : [];
+				const evalIds = dataObj ? dataObj.evaluators : [];
+
+				getTeamFromIds({ teamIds: teamIds, type: "students" })
 					.then((team) => {
-						sendResponse({ response: res, data: team, error: null });
+						getTeamFromIds({ teamIds: mentorIds, type: "mentors" })
+							.then((mentors) => {
+								getTeamFromIds({ teamIds: evalIds, type: "evaluators" })
+									.then((evaluators) => {
+										sendResponse({
+											response: res,
+											data: {
+												team: team,
+												mentors: mentors,
+												evaluators: evaluators,
+											},
+											error: null,
+										});
+									})
+									.catch((err) => {
+										sendResponse({
+											response: res,
+											data: { team: team, mentors: mentors, evaluators: [] },
+											error: err,
+										});
+									});
+							})
+							.catch((err) => {
+								sendResponse({
+									response: res,
+									data: { team: team, mentors: [], evaluators: [] },
+									error: err,
+								});
+							});
 					})
 					.catch((err) => {
 						sendResponse({
@@ -131,6 +162,7 @@ router.post("/create/:student_id", (req, res) => {
 			},
 		],
 		mentors: [],
+		evaluators: [],
 		currentStage: 1,
 		isSubmited: false,
 		isEvaluated: false,

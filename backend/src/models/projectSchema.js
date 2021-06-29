@@ -22,6 +22,9 @@ const projectSchema = mongoose.Schema({
 	mentors: {
 		type: Array,
 	},
+	evaluators: {
+		type: Array,
+	},
 	currentStage: {
 		type: Number,
 	},

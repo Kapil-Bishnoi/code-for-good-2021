@@ -1,6 +1,7 @@
 const express = require("express");
 const sendResponse = require("../lib/response");
 const Evaluator = require("../models/evaluatorUserSchema");
+const Project = require('../models/projectSchema');
 const getProjectsFromStudentId = require("../lib/studentProjects");
 
 const router = express.Router();
@@ -113,11 +114,23 @@ router.post("/selectproject/:evaluator_id/:project_id", (req, res) => {
 		{ $addToSet: { assignedProjects: newProj } }
 	)
 		.then((evalUpdate) => {
-			sendResponse({
-				response: res,
-				data: evalUpdate,
-				error: null,
-			});
+			const newEval = {
+				evaluatorId: req.params.evaluator_id,
+			};
+			Project.updateOne(
+				{ projectId: req.params.project_id },
+				{ $addToSet: { evaluators: newEval } }
+			)
+				.then((projectUpdate) => {
+					sendResponse({
+						response: res,
+						data: { evalUpdate, projectUpdate },
+						error: null,
+					});
+				})
+				.catch((err) => {
+					sendResponse({ response: res, data: null, error: err });
+				});
 		})
 		.catch((err) => {
 			sendResponse({ response: res, data: null, error: err });
@@ -134,11 +147,23 @@ router.post("/leaveproject/:evaluator_id/:project_id", (req, res) => {
 		{ $pull: { assignedProjects: deletedProj } }
 	)
 		.then((evalUpdate) => {
-			sendResponse({
-				response: res,
-				data: evalUpdate,
-				error: null,
-			});
+			const leaveEval = {
+				evaluatorId: req.params.evaluator_id,
+			};
+			Project.updateOne(
+				{ projectId: req.params.project_id },
+				{ $pull: { evaluators: leaveEval } }
+			)
+				.then((projectUpdate) => {
+					sendResponse({
+						response: res,
+						data: { evalUpdate, projectUpdate },
+						error: null,
+					});
+				})
+				.catch((err) => {
+					sendResponse({ response: res, data: null, error: err });
+				});
 		})
 		.catch((err) => {
 			sendResponse({ response: res, data: null, error: err });
