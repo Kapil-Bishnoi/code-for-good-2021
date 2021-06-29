@@ -25,7 +25,7 @@ router.post("/update/:role/:id", (req, res) => {
 	} else if (req.params.role === "mentor") {
 		Mentor.updateOne(
 			{ mentorId: req.params.id },
-			{ profileURL: res.body.imageURL }
+			{ profileURL: req.body.imageURL }
 		)
 			.then((updateRes) => {
 				sendResponse({
@@ -40,7 +40,7 @@ router.post("/update/:role/:id", (req, res) => {
 	} else {
 		Evaluator.updateOne(
 			{ evaluatorId: req.params.id },
-			{ profileURL: res.body.imageURL }
+			{ profileURL: req.body.imageURL }
 		)
 			.then((updateRes) => {
 				sendResponse({
