@@ -72,12 +72,10 @@ export const ProjectCard = ({ proj, isActive }) => {
 	};
 
 	const handleProjCardClick = () => {
-		if (role === "student" && !proj.isSubmited) {
-			history.push({
-				pathname: `/projects/${proj.projectId}`,
-				state: proj,
-			});
-		}
+		history.push({
+			pathname: `/projects/${proj.projectId}`,
+			state: proj,
+		});
 	};
 
 	const confirmLeave = () => {
@@ -183,17 +181,17 @@ export const ProjectCard = ({ proj, isActive }) => {
 					</Button>
 				)}
 				{role === "student" && proj.isSubmited && (
-					<Button fullWidth size="medium" variant="contained" color="primary">
+					<Button fullWidth size="medium" variant="contained" color="primary" onClick={handleProjCardClick}>
 						View
 					</Button>
 				)}
 				{role === "mentor" && (
-					<Button fullWidth size="large" variant="contained" color="primary">
+					<Button fullWidth size="large" variant="contained" color="primary" onClick={handleProjCardClick}>
 						View
 					</Button>
 				)}
 				{role === "evaluator" && (
-					<Button size="small" variant="contained" color="primary">
+					<Button size="small" variant="contained" color="primary" onClick={handleProjCardClick}>
 						{proj.isEvaluated ? "View" : "Evaluate"}
 					</Button>
 				)}

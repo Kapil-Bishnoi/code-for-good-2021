@@ -8,7 +8,13 @@ import {
 	CssBaseline,
 	TextField,
 	Typography,
+	IconButton,
+	Avatar,
+	Input,
 } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
+import { PhotoCamera } from "@material-ui/icons";
+import MovieIcon from "@material-ui/icons/Movie";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -28,15 +34,27 @@ const useStyles = makeStyles((theme) => ({
 	},
 	qItem: {
 		padding: theme.spacing(2),
+		display: "flex",
 	},
 	submit: {
 		margin: theme.spacing(3, 0, 2),
+	},
+	title: {
+		display: "flex",
+	},
+	projectSubmitBtn: {
+		display: "flex",
+		marginTop: theme.spacing(4),
+		justifyContent: "center",
+		alignItems: "center",
+		marginBottom: theme.spacing(12),
 	},
 }));
 
 export const FiveI = ({ projId }) => {
 	const classes = useStyles();
-
+	const role = localStorage.getItem("role");
+	const access = role && role === "student" ? true : false;
 	const [fiveI, setFiveI] = useState({
 		identify: null,
 		investigation: null,
@@ -44,11 +62,17 @@ export const FiveI = ({ projId }) => {
 		implementation: null,
 		inform: null,
 	});
-	console.log(fiveI);
+	const [i1, setI1] = useState(fiveI.identify);
+	const [i2, setI2] = useState(fiveI.investigation);
+	const [i3, setI3] = useState(fiveI.ideation);
+	const [i4, setI4] = useState(fiveI.implementation);
+	const [i5, setI5] = useState(fiveI.inform);
 
-	const { identify, investigation, ideation, implementation, inform } = {
-		...fiveI,
-	};
+	console.log(i1);
+
+	// const { identify, investigation, ideation, implementation, inform } = {
+	// 	...fiveI,
+	// };
 
 	useEffect(() => {
 		axios
@@ -63,36 +87,93 @@ export const FiveI = ({ projId }) => {
 			});
 	}, []);
 
+	useEffect(() => {
+		setI1(fiveI.identify);
+		setI2(fiveI.investigation);
+		setI3(fiveI.ideation);
+		setI4(fiveI.implementation);
+		setI5(fiveI.inform);
+	}, [fiveI]);
+
 	return (
 		<Container component="main" className={classes.root}>
 			<CssBaseline />
 			<div className={classes.stageItem}>
-				<StageItem label="1) Identify" stage={identify} cnt={1} />
+				<StageItem label="1) Identify" stage={i1} cnt={1} access={access} />
 			</div>
 			<div className={classes.stageItem}>
-				<StageItem label="2) investigation" stage={investigation} cnt={2} />
+				<StageItem
+					label="2) investigation"
+					stage={i2}
+					cnt={2}
+					access={access}
+				/>
 			</div>
 			<div className={classes.stageItem}>
-				<StageItem label="3) Ideation" stage={ideation} cnt={3} />
+				<StageItem label="3) Ideation" stage={i3} cnt={3} access={access} />
 			</div>
 			<div className={classes.stageItem}>
-				<StageItem label="4) Implementation" stage={implementation} cnt={4} />
+				<StageItem
+					label="4) Implementation"
+					stage={i4}
+					cnt={4}
+					access={access}
+				/>
 			</div>
 			<div className={classes.stageItem}>
-				<StageItem label="5) Inform" stage={inform} cnt={5} />
+				<StageItem label="5) Inform" stage={i5} cnt={5} access={access} />
 			</div>
+			<Grid
+				container
+				style={{
+					display: "flex",
+					justifyContent: "space-around",
+					alignItems: "center",
+				}}
+			>
+				<Typography component="h5" variant="h6">
+					Paste Project Demo Link(Optional)
+				</Typography>
+				<TextField
+					disabled={access ? false : true}
+					type="url"
+					fullWidth
+					placeholder="Project Demo URL"
+					variant="outlined"
+					label="Project Demo URL"
+				/>
+			</Grid>
+			{access && (
+				<Grid className={classes.projectSubmitBtn}>
+					<Button variant="contained" color="primary">
+						Submit Project
+					</Button>
+				</Grid>
+			)}
 		</Container>
 	);
 };
 
-function StageItem({ stage, label, cnt }) {
+function StageItem({ stage, label, cnt, access }) {
 	const classes = useStyles();
+	const [editable, toggle] = useState(false);
 	return (
 		<>
 			<Grid item xs={12} className={classes.title}>
 				<Typography component="h1" variant="h4">
 					{label}
 				</Typography>
+				{access && (
+					<IconButton
+						style={{
+							color: "#3c52b2",
+						}}
+						onClick={() => toggle(!editable)}
+					>
+						<EditIcon />
+						edit
+					</IconButton>
+				)}
 			</Grid>
 			<Container className={classes.formContainer}>
 				<form className={classes.form} noValidate>
@@ -105,6 +186,7 @@ function StageItem({ stage, label, cnt }) {
 								key={`i${cnt}q${q.qId}`}
 							>
 								<TextField
+									autoFocus
 									autoComplete="off"
 									name={`i${cnt}q${q.qId}`}
 									variant="outlined"
@@ -114,6 +196,7 @@ function StageItem({ stage, label, cnt }) {
 									label={q.qText + ` [max marks: ${q.maxMarks}]`}
 									multiline
 									rows={5}
+									disabled={editable && access ? false : true}
 								/>
 							</Grid>
 						);
@@ -125,18 +208,47 @@ function StageItem({ stage, label, cnt }) {
 								xs={12}
 								className={classes.qItem}
 								key={`i${cnt}i${q.imageId}`}
+								direction="column"
 							>
-								<TextField
-									autoComplete="off"
-									name={`i${cnt}i${q.qId}`}
-									variant="outlined"
-									required
-									fullWidth
-									id={`i${cnt}i${q.qId}`}
-									label={q.imageText + ` [max marks: ${q.maxMarks}]`}
-									multiline
-									rows={5}
-								/>
+								<Typography>
+									{q.imageText + ` [max marks: ${q.maxMarks}]`}
+								</Typography>
+								{access && (
+									<Input
+										accept="image/*"
+										style={{ display: "none" }}
+										id="icon-button-file"
+										type="file"
+										// onChange={handleImageSubmit}
+									/>
+								)}
+								<label htmlFor="icon-button-file">
+									<IconButton
+										color="primary"
+										aria-label="upload picture"
+										component="span"
+										style={{
+											height: "400px",
+											width: "400px",
+											backgroundColor: "#c9c7e0",
+										}}
+										disabled={access ? false : true}
+									>
+										{!q.imageURL && (
+											<span>
+												<PhotoCamera /> Upload Image
+											</span>
+										)}
+										{q.imageURL && (
+											<Avatar
+												name={`i${cnt}i${q.imageId}`}
+												id={`i${cnt}i${q.imageId}`}
+												variant="square"
+												src={q.imageURL}
+											/>
+										)}
+									</IconButton>
+								</label>
 							</Grid>
 						);
 					})}
@@ -147,18 +259,47 @@ function StageItem({ stage, label, cnt }) {
 								xs={12}
 								className={classes.qItem}
 								key={`i${cnt}v${q.videoId}`}
+								direction="column"
 							>
-								<TextField
-									autoComplete="off"
-									name={`i${cnt}v${q.qId}`}
-									variant="outlined"
-									required
-									fullWidth
-									id={`i${cnt}v${q.qId}`}
-									label={q.videoText + ` [max marks: ${q.maxMarks}]`}
-									multiline
-									rows={5}
-								/>
+								<Typography>
+									{q.videoText + ` [max marks: ${q.maxMarks}]`}
+								</Typography>
+								{access && (
+									<Input
+										accept="video/*"
+										style={{ display: "none" }}
+										id="icon-button-file"
+										type="file"
+										// onChange={handleImageSubmit}
+									/>
+								)}
+								<label htmlFor="icon-button-file">
+									<IconButton
+										color="primary"
+										aria-label="upload picture"
+										component="span"
+										style={{
+											height: "400px",
+											width: "400px",
+											backgroundColor: "#c9c7e0",
+										}}
+										disabled={access ? false : true}
+									>
+										{!q.videoURL && (
+											<span>
+												<MovieIcon /> Upload Video
+											</span>
+										)}
+										{q.videoURL && (
+											<Avatar
+												name={`i${cnt}v${q.videoId}`}
+												id={`i${cnt}v${q.videoId}`}
+												variant="square"
+												src={q.videoURL}
+											/>
+										)}
+									</IconButton>
+								</label>
 							</Grid>
 						);
 					})}
