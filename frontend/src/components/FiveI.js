@@ -15,6 +15,7 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import { PhotoCamera } from "@material-ui/icons";
 import MovieIcon from "@material-ui/icons/Movie";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -54,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 export const FiveI = ({ projId }) => {
 	const classes = useStyles();
 	const role = localStorage.getItem("role");
+	const history = useHistory();
 	const access = role && role === "student" ? true : false;
 	const [fiveI, setFiveI] = useState({
 		identify: null,
@@ -94,6 +96,24 @@ export const FiveI = ({ projId }) => {
 		setI4(fiveI.implementation);
 		setI5(fiveI.inform);
 	}, [fiveI]);
+
+	const handleProjectSubmit = () => {
+		axios
+			.request(`https://cfg2021.herokuapp.com/projects/submit/${projId}`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": "*",
+				},
+			})
+			.then((res) => {
+				console.log(res);
+				history.push("/projects");
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	return (
 		<Container component="main" className={classes.root}>
@@ -145,7 +165,11 @@ export const FiveI = ({ projId }) => {
 			</Grid>
 			{access && (
 				<Grid className={classes.projectSubmitBtn}>
-					<Button variant="contained" color="primary">
+					<Button
+						onClick={handleProjectSubmit}
+						variant="contained"
+						color="primary"
+					>
 						Submit Project
 					</Button>
 				</Grid>
