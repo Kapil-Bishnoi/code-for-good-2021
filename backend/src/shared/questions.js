@@ -4,7 +4,7 @@ const i1Stage = {
 		{
 			qId: 0,
 			qText: "What is the problem you / team identified ?",
-			qAns: "",
+			qAns: "Well we were dicussing...",
 			maxMarks: 10,
 		},
 		{
@@ -18,7 +18,7 @@ const i1Stage = {
 		{
 			imageId: 0,
 			imageText: "you have a picture of identified problem? Share it here!",
-			imageURL: "",
+			imageURL: "https://images.unsplash.com/photo-1541963463532-d68292c34b19",
 			maxMarks: 10,
 		},
 	],
