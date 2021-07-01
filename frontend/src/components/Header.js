@@ -57,6 +57,12 @@ export const Header = () => {
 		toggleOptionSwitch(null);
 	};
 
+	// const handleRegisterNewExcep = () => {
+	// history.push('/ex/reg');
+	// }
+
+	// onClick = {handleRegisterNewExcep}
+
 	return (
 		<div className={classes.root}>
 			<AppBar position="static">
@@ -109,13 +115,17 @@ export const Header = () => {
 									open={Boolean(signupSwitch)}
 									onClose={() => toggleSignupSwitch(null)}
 								>
-									<MenuItem onClick={() => handleButtonClick('/signup/student')}>
+									<MenuItem
+										onClick={() => handleButtonClick("/signup/student")}
+									>
 										SignUp as Student
 									</MenuItem>
-									<MenuItem onClick={() => handleButtonClick('/signup/mentor')}>
+									<MenuItem onClick={() => handleButtonClick("/signup/mentor")}>
 										SignUp as Mentor
 									</MenuItem>
-									<MenuItem onClick={() => handleButtonClick('/signup/evaluator')}>
+									<MenuItem
+										onClick={() => handleButtonClick("/signup/evaluator")}
+									>
 										SignUp as Evaluator
 									</MenuItem>
 								</Menu>
@@ -155,13 +165,15 @@ export const Header = () => {
 								open={Boolean(signupSwitch)}
 								onClose={() => toggleSignupSwitch(null)}
 							>
-								<MenuItem onClick={() => handleButtonClick('/signup/student')}>
+								<MenuItem onClick={() => handleButtonClick("/signup/student")}>
 									SignUp as Student
 								</MenuItem>
-								<MenuItem onClick={() => handleButtonClick('/signup/mentor')}>
+								<MenuItem onClick={() => handleButtonClick("/signup/mentor")}>
 									SignUp as Mentor
 								</MenuItem>
-								<MenuItem onClick={() => handleButtonClick('/signup/evaluator')}>
+								<MenuItem
+									onClick={() => handleButtonClick("/signup/evaluator")}
+								>
 									SignUp as Evaluator
 								</MenuItem>
 							</Menu>
