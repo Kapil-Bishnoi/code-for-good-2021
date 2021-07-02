@@ -11,9 +11,9 @@ import { AuthContext } from "./context/Auth";
 import { HeaderAuth } from "./components/HeaderAuth";
 import { CreateProject } from "./components/CreateProject";
 import { Profile } from "./components/Profile";
-import {Projects} from './components/Projects';
-import {Project5I} from './components/Project5I';
-import {SelectProjects} from "./components/SelectProjects";
+import { Projects } from "./components/Projects";
+import { Project5I } from "./components/Project5I";
+import { SelectProjects } from "./components/SelectProjects";
 
 function App() {
 	const { firebaseUser } = useContext(AuthContext);
@@ -60,9 +60,17 @@ function App() {
 						/>
 					)}
 					{role !== "student" && (
-						<Route exact path="/selectprojects" component={() => <SelectProjects />} />
+						<Route
+							exact
+							path="/selectprojects"
+							component={() => <SelectProjects />}
+						/>
 					)}
-					<Route exact path="/projects/:project_id" component={() => <Project5I />}  />
+					<Route
+						exact
+						path="/projects/:project_id"
+						component={() => <Project5I />}
+					/>
 					<Route exact path="/projects" component={() => <Projects />} />
 					<Route exact path="/profile" component={() => <Profile />} />
 					{/* <Redirect to="/home" /> */}
