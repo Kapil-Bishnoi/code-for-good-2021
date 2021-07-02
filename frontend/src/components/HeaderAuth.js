@@ -58,6 +58,7 @@ export const HeaderAuth = () => {
 	const firebaseLogout = () => {
 		fire.auth().signOut();
 		localStorage.removeItem("userId");
+		history.push('/login');
 	};
 
 	const [user, setUser] = useState(null);
