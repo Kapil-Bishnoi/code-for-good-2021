@@ -98,7 +98,7 @@ export const FiveI = ({ projId, isSubmited }) => {
 		};
 
 		axios
-			.request(`http://localhost:7600/fivei/savechanges/${projId}`, {
+			.request(`https://cfg2021.herokuapp.com/fivei/savechanges/${projId}`, {
 				method: "POST",
 				data: JSON.stringify(updatedProject),
 				headers: {
