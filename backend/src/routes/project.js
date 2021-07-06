@@ -4,7 +4,7 @@ const Project = require("../models/projectSchema");
 const { v4: uid } = require("uuid");
 const Student = require("../models/studentUserSchema");
 const FiveI = require("../models/5Ischema");
-import { questions } from "../shared/questions";
+const questions = require('../shared/questions');
 const getTeamFromIds = require("../lib/getTeamfromIds");
 
 const router = express.Router();

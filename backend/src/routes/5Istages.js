@@ -1,7 +1,7 @@
 const express = require("express");
 const sendResponse = require("../lib/response");
 const FiveI = require("../models/5Ischema");
-import {questions} from '../shared/questions';
+const questions = require('../shared/questions');
 
 const router = express.Router();
 

@@ -1,4 +1,5 @@
-export const questions = [
+ 
+ const questions = [
 	{
 		id: 0,
 		stage: 1,
@@ -133,3 +134,5 @@ export const questions = [
 		type: "video",
 	},
 ];
+
+module.exports = questions;
