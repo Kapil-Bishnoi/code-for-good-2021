@@ -1,164 +1,135 @@
-
-const i1Stage = {
-	questions: [
-		{
-			qId: 0,
-			qText: "What is the problem you / team identified ?",
-			qAns: "Well we were dicussing...",
-			maxMarks: 10,
-		},
-		{
-			qId: 1,
-			qText: "Explain why you identified this problem",
-			qAns: "",
-			maxMarks: 5,
-		},
-	],
-	images: [
-		{
-			imageId: 0,
-			imageText: "you have a picture of identified problem? Share it here!",
-			imageURL: "https://images.unsplash.com/photo-1541963463532-d68292c34b19",
-			maxMarks: 10,
-		},
-	],
-	videos: [
-		{
-			videoId: 0,
-			videoText: "you have a video of identified problem? Share its link here!",
-			videoURL: "",
-			maxMarks: 10,
-		},
-	],
-};
-
-const i2Stage = {
-	questions: [
-		{
-			qId: 0,
-			qText:
-				"Number of citizens you spoke in order to understand your issue better?",
-			qAns: "",
-			maxMarks: 10,
-		},
-	],
-	images: [
-		{
-			imageId: 0,
-			imageText:
-				"Have you captured a photo of your interaction? Share it here!",
-			imageURL: "",
-			maxMarks: 10,
-		},
-		{
-			imageId: 1,
-			imageText: "show us how your sample questionnaire looks like?",
-			imageURL: "",
-			maxMarks: 10,
-		},
-	],
-	videos: [
-		{
-			videoId: 0,
-			videoText:
-				"Have you captured a video of your interaction? Share its link here!",
-			videoURL: "",
-			maxMarks: 10,
-		},
-	],
-};
-
-const i3Stage = {
-	questions: [
-		{
-			qId: 0,
-			qText:
-				"Why did you decide to choose the above solution to solve the problem?",
-			qAns: "",
-			maxMarks: 10,
-		},
-		{
-			qId: 1,
-			qText: "How long do you think soluton will last?",
-			qAns: "",
-			maxMarks: 10,
-		},
-	],
-	images: [
-		{
-			imageId: 0,
-			imageText: "Have you captured a photo of your solution? Share it here!",
-			imageURL: "",
-			maxMarks: 10,
-		},
-	],
-	videos: [],
-};
-
-const i4Stage = {
-	questions: [
-		{
-			qId: 0,
-			qText:
-				"Did you approach (either through WhatsAppSMS/Letter/Email/Meeting) your local government for your solution? (Councillor/MLA/Electricity/Water/Other Agencies)",
-			qAns: "",
-			maxMarks: 10,
-		},
-		{
-			qId: 1,
-			qText:
-				"In case of water conservation, climate change and waste management, please fill up the amount of waste saved, water saved, carbon footprint after you have undertaken the project",
-			qAns: "",
-			maxMarks: 10,
-		},
-	],
-	images: [
-		{
-			imageId: 0,
-			imageText: "Share the photos of your implemented solution",
-			imageURL: "",
-			maxMarks: 10,
-		},
-		{
-			imageId: 1,
-			imageText: "Share photos of jingle, awareness campaigns etc? (optional)",
-			imageURL: "",
-			maxMarks: 10,
-		},
-	],
-	videos: [
-		{
-			videoId: 0,
-			videoText: "Share the videos of your implemented solution",
-			videoURL: "",
-			maxMarks: 10,
-		},
-	],
-};
-
-const i5Stage = {
-	questions: [
-		{
-			qId: 0,
-			qText: "Who was the mentor of this project?",
-			qAns: "",
-			maxMarks: 10,
-		},
-		{
-			qId: 1,
-			qText: "Share their contact number and email id",
-			qAns: "",
-			maxMarks: 10,
-		},
-		{
-			qId: 2,
-			qText: "How long did you work on this project?",
-			qAns: "",
-			maxMarks: 10,
-		},
-	],
-	images: [],
-	videos: [],
-};
-
-module.exports = { i1Stage, i2Stage, i3Stage, i4Stage, i5Stage };
+export const questions = [
+	{
+		id: 0,
+		stage: 1,
+		text: "What is the problem you / team identified ?",
+		ans: "",
+		type: "text",
+	},
+	{
+		id: 1,
+		stage: 1,
+		text: "Explain why you identified this problem",
+		ans: "",
+		type: "text",
+	},
+	{
+		id: 2,
+		stage: 2,
+		text: "Number of citizens you spoke in order to understand your issue better?",
+		ans: "",
+		type: "text",
+	},
+	{
+		id: 3,
+		stage: 3,
+		text: "Why did you decide to choose the above solution to solve the problem?",
+		ans: "",
+		type: "text",
+	},
+	{
+		id: 4,
+		stage: 3,
+		text: "How long do you think soluton will last?",
+		ans: "",
+		type: "text",
+	},
+	{
+		id: 5,
+		stage: 4,
+		text: "Did you approach (either through WhatsAppSMS/Letter/Email/Meeting) your local government for your solution? (Councillor/MLA/Electricity/Water/Other Agencies)",
+		ans: "",
+		type: "text",
+	},
+	{
+		id: 6,
+		stage: 4,
+		text: "In case of water conservation, climate change and waste management, please fill up the amount of waste saved, water saved, carbon footprint after you have undertaken the project",
+		ans: "",
+		type: "text",
+	},
+	{
+		id: 7,
+		stage: 5,
+		text: "Who was the mentor of this project?",
+		ans: "",
+		type: "text",
+	},
+	{
+		id: 8,
+		stage: 5,
+		text: "Share their contact number and email id",
+		ans: "",
+		type: "text",
+	},
+	{
+		id: 9,
+		stage: 5,
+		text: "How long did you work on this project?",
+		ans: "",
+		type: "text",
+	},
+	{
+		id: 10,
+		stage: 1,
+		text: "you have a picture of identified problem? Share it here!",
+		url: "",
+		type: "image",
+	},
+	{
+		id: 11,
+		stage: 1,
+		text: "you have a video of identified problem? Share its link here!",
+		url: "",
+		type: "video",
+	},
+	{
+		id: 12,
+		stage: 2,
+		text: "Have you captured a photo of your interaction? Share it here!",
+		url: "",
+		type: "image",
+	},
+	{
+		id: 13,
+		stage: 2,
+		text: "show us how your sample questionnaire looks like?",
+		url: "",
+		type: "image",
+	},
+	{
+		id: 14,
+		stage: 2,
+		text: "Have you captured a video of your interaction? Share its link here!",
+		url: "",
+		type: "video",
+	},
+	{
+		id: 15,
+		stage: 3,
+		text: "Have you captured a photo of your solution? Share it here!",
+		url: "",
+		type: "image",
+	},
+	{
+		id: 16,
+		stage: 4,
+		text: "Share the photo of your implemented solution",
+		url: "",
+		type: "image",
+	},
+	{
+		id: 17,
+		stage: 4,
+		text: "Share photos of jingle, awareness campaigns etc? (optional)",
+		url: "",
+		type: "image",
+	},
+	{
+		id: 18,
+		stage: 4,
+		text: "Share the videos of your implemented solution",
+		url: "",
+		type: "video",
+	},
+];

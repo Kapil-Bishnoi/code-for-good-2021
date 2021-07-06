@@ -5,24 +5,8 @@ const fiveIschema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	identify: {
-		type: Object,
-		required: true,
-	},
-	investigation: {
-		type: Object,
-		required: true,
-	},
-	ideation: {
-		type: Object,
-		required: true,
-	},
-	implementation: {
-		type: Object,
-		required: true,
-	},
-	inform: {
-		type: Object,
+	questions: {
+		type: Array,
 		required: true,
 	},
 	demoURL: {

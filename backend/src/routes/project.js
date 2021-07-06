@@ -4,13 +4,7 @@ const Project = require("../models/projectSchema");
 const { v4: uid } = require("uuid");
 const Student = require("../models/studentUserSchema");
 const FiveI = require("../models/5Ischema");
-const {
-	i1Stage,
-	i2Stage,
-	i3Stage,
-	i4Stage,
-	i5Stage,
-} = require("../shared/questions");
+const { questions } = require("../shared/questions");
 const getTeamFromIds = require("../lib/getTeamfromIds");
 
 const router = express.Router();
@@ -95,7 +89,10 @@ router.get("/name/:project_name", (req, res) => {
 
 // fetch team members of a project
 router.get("/team/:project_id", (req, res) => {
-	Project.find({ projectId: req.params.project_id }, { _id: 0, team: 1, mentors:1, evaluators: 1 })
+	Project.find(
+		{ projectId: req.params.project_id },
+		{ _id: 0, team: 1, mentors: 1, evaluators: 1 }
+	)
 		.then((data) => {
 			if (data) {
 				// console.log(data);
@@ -189,17 +186,12 @@ router.post("/create/:student_id", (req, res) => {
 					// now create fiveI for this project
 					const new5I = new FiveI({
 						projectId: newProject.projectId,
-						identify: i1Stage,
-						investigation: i2Stage,
-						ideation: i3Stage,
-						implementation: i4Stage,
-						inform: i5Stage,
+						questions: questions,
 						demoURL: "",
 					});
 					new5I
 						.save()
 						.then((saveRes) => {
-							console.log("created 5 Is");
 							//also send project data in response
 							sendResponse({
 								response: res,

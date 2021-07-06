@@ -1,13 +1,7 @@
 const express = require("express");
 const sendResponse = require("../lib/response");
 const FiveI = require("../models/5Ischema");
-const {
-	i1Stage,
-	i2Stage,
-	i3Stage,
-	i4Stage,
-	i5Stage,
-} = require("../shared/questions");
+import {questions} from '../shared/questions';
 
 const router = express.Router();
 
@@ -41,11 +35,7 @@ router.get("/:project_id", (req, res) => {
 router.post("/create/:project_id", (req, res) => {
 	const new5I = new FiveI({
 		projectId: req.params.project_id,
-		identify: i1Stage,
-		investigation: i2Stage,
-		ideation: i3Stage,
-		implementation: i4Stage,
-		inform: i5Stage,
+		questions: questions,
 		demoURL: "",
 	});
 
