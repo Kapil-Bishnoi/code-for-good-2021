@@ -165,7 +165,7 @@ export const Project5I = () => {
 					Five I Stages
 				</Typography>
 			</Grid>
-			<FiveI projId={projectInfo.projectId} />
+			<FiveI projId={projectInfo.projectId} isSubmited={projectInfo.isSubmited} />
 		</Container>
 	);
 };

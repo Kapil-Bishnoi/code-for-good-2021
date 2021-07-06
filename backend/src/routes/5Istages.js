@@ -31,6 +31,22 @@ router.get("/:project_id", (req, res) => {
 		});
 });
 
+// update project changes by students
+router.post("/savechanges/:project_id", (req,res) => {
+	const updatedProject = {
+		projectId: req.params.project_id,
+		questions: req.body.questions,
+		demoURL: req.body.demoURL,
+	}
+	FiveI.updateOne({projectId: req.params.project_id}, updatedProject)
+	.then((updateRes) => {
+		sendResponse({response:res, data: updateRes, error: null});
+	})
+	.catch((err) => {	
+		sendResponse({response:res, data: null, error: err});
+	})
+})
+
 // creating 5Is for a project
 router.post("/create/:project_id", (req, res) => {
 	const new5I = new FiveI({

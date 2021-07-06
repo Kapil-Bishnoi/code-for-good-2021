@@ -50,52 +50,86 @@ const useStyles = makeStyles((theme) => ({
 		alignItems: "center",
 		marginBottom: theme.spacing(12),
 	},
+	saveBtn: {
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "space-around",
+		paddingTop: theme.spacing(4),
+		paddingBottom: theme.spacing(4),
+	},
 }));
 
-export const FiveI = ({ projId }) => {
+export const FiveI = ({ projId, isSubmited }) => {
 	const classes = useStyles();
 	const role = localStorage.getItem("role");
 	const history = useHistory();
-	const access = role && role === "student" ? true : false;
-	const [fiveI, setFiveI] = useState({
-		identify: null,
-		investigation: null,
-		ideation: null,
-		implementation: null,
-		inform: null,
-	});
-	const [i1, setI1] = useState(fiveI.identify);
-	const [i2, setI2] = useState(fiveI.investigation);
-	const [i3, setI3] = useState(fiveI.ideation);
-	const [i4, setI4] = useState(fiveI.implementation);
-	const [i5, setI5] = useState(fiveI.inform);
+	const access = role && !isSubmited && role === "student" ? true : false;
 
-	console.log(i1);
+	const [prevQues, setPrevQes] = useState([]);
+	const [questions, setQues] = useState([]);
+	const [prevDemoURL, setPrevDemoURL] = useState(null);
+	const [demoURL, setDemoURL] = useState(null);
 
-	// const { identify, investigation, ideation, implementation, inform } = {
-	// 	...fiveI,
-	// };
+	const handleChange = (e) => {
+		const newData = [];
+		questions.map((q) => {
+			if (q.id == e.target.name) {
+				const newQ = {
+					...q,
+					ans: e.target.value,
+				};
+				newData.push(newQ);
+			} else {
+				newData.push(q);
+			}
+		});
+		setQues(newData);
+	};
+
+	const cancelCurrentChanges = () => {
+		setQues(prevQues);
+		setDemoURL(prevDemoURL);
+	};
+
+	const saveCurrentChanges = () => {
+		const updatedProject = {
+			questions: questions,
+			demoURL: demoURL,
+		};
+
+		axios
+			.request(`http://localhost:7600/fivei/savechanges/${projId}`, {
+				method: "POST",
+				data: JSON.stringify(updatedProject),
+				headers: {
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": "*",
+				},
+			})
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	useEffect(() => {
 		axios
 			.get(`https://cfg2021.herokuapp.com/fivei/${projId}`)
 			.then((res) => {
-				console.log(res);
-				const dataObj = res.data.data;
-				setFiveI(dataObj[0]);
+				// console.log(res);
+				const quesData = res.data.data?.[0]?.questions || [];
+				const demoURLData = res.data.data?.[0]?.demoURL;
+				setQues(quesData);
+				setDemoURL(demoURLData);
+				setPrevQes(quesData);
+				setPrevDemoURL(demoURLData);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	}, []);
-
-	useEffect(() => {
-		setI1(fiveI.identify);
-		setI2(fiveI.investigation);
-		setI3(fiveI.ideation);
-		setI4(fiveI.implementation);
-		setI5(fiveI.inform);
-	}, [fiveI]);
 
 	const handleProjectSubmit = () => {
 		axios
@@ -115,40 +149,63 @@ export const FiveI = ({ projId }) => {
 			});
 	};
 
+	const arr = [
+		{
+			val: 1,
+			label: "1) Identify",
+		},
+		{
+			val: 2,
+			label: "2) investigation",
+		},
+		{
+			val: 3,
+			label: "3) Ideation",
+		},
+		{
+			val: 4,
+			label: "4) Implementation",
+		},
+		{
+			val: 5,
+			label: "5) Inform",
+		},
+	];
+
 	return (
 		<Container component="main" className={classes.root}>
 			<CssBaseline />
-			<div className={classes.stageItem}>
-				<StageItem label="1) Identify" stage={i1} cnt={1} access={access} />
-			</div>
-			<div className={classes.stageItem}>
-				<StageItem
-					label="2) investigation"
-					stage={i2}
-					cnt={2}
-					access={access}
-				/>
-			</div>
-			<div className={classes.stageItem}>
-				<StageItem label="3) Ideation" stage={i3} cnt={3} access={access} />
-			</div>
-			<div className={classes.stageItem}>
-				<StageItem
-					label="4) Implementation"
-					stage={i4}
-					cnt={4}
-					access={access}
-				/>
-			</div>
-			<div className={classes.stageItem}>
-				<StageItem label="5) Inform" stage={i5} cnt={5} access={access} />
-			</div>
+			{access && (
+				<Grid className={classes.saveBtn}>
+					<Button color="primary" variant="contained" onClick={saveCurrentChanges}>
+						Save Current Changes
+					</Button>
+					<Button variant="contained" onClick={cancelCurrentChanges}>
+						Cancel Current Changes
+					</Button>
+				</Grid>
+			)}
+			{arr.map((item) => {
+				const ques = questions && questions.filter((q) => q.stage === item.val);
+				return (
+					<div key={item.label} className={classes.stageItem}>
+						<StageItem
+							questions={ques}
+							label={item.label}
+							stage={item.val}
+							access={access}
+							handleChange={handleChange}
+						/>
+					</div>
+				);
+			})}
 			<Grid
 				container
 				style={{
 					display: "flex",
 					justifyContent: "space-around",
 					alignItems: "center",
+					paddingBottom:"30px"
 				}}
 			>
 				<Typography component="h5" variant="h6">
@@ -161,6 +218,8 @@ export const FiveI = ({ projId }) => {
 					placeholder="Project Demo URL"
 					variant="outlined"
 					label="Project Demo URL"
+					value={demoURL}
+					onChange={(e) => setDemoURL(e.target.value)}
 				/>
 			</Grid>
 			{access && (
@@ -178,9 +237,14 @@ export const FiveI = ({ projId }) => {
 	);
 };
 
-function StageItem({ stage, label, cnt, access }) {
+function StageItem({ stage, label, questions, access, handleChange }) {
 	const classes = useStyles();
 	const [editable, toggle] = useState(false);
+
+	const ques = questions && questions.filter((q) => q.type === "text");
+	const images = questions && questions.filter((q) => q.type === "image");
+	const videos = questions && questions.filter((q) => q.type === "video");
+
 	return (
 		<>
 			<Grid item xs={12} className={classes.title}>
@@ -201,23 +265,19 @@ function StageItem({ stage, label, cnt, access }) {
 			</Grid>
 			<Container className={classes.formContainer}>
 				<form className={classes.form} noValidate>
-					{stage?.questions.map((q) => {
+					{ques?.map((q) => {
 						return (
-							<Grid
-								item
-								xs={12}
-								className={classes.qItem}
-								key={`i${cnt}q${q.qId}`}
-							>
+							<Grid item xs={12} className={classes.qItem} key={q.id}>
 								<TextField
-									autoFocus
-									autoComplete="off"
-									name={`i${cnt}q${q.qId}`}
+									name={q.id}
+									id={q.id}
+									value={q.ans}
+									onChange={(e) => handleChange(e)}
+									label={q.text}
 									variant="outlined"
+									autoComplete="off"
 									required
 									fullWidth
-									id={`i${cnt}q${q.qId}`}
-									label={q.qText + ` [max marks: ${q.maxMarks}]`}
 									multiline
 									rows={5}
 									disabled={editable && access ? false : true}
@@ -225,28 +285,27 @@ function StageItem({ stage, label, cnt, access }) {
 							</Grid>
 						);
 					})}
-					{stage?.images.map((q) => {
+					{images?.map((q) => {
 						return (
 							<Grid
 								item
 								xs={12}
 								className={classes.qItem}
-								key={`i${cnt}i${q.imageId}`}
+								key={q.id}
 								direction="column"
 							>
-								<Typography>
-									{q.imageText + ` [max marks: ${q.maxMarks}]`}
-								</Typography>
+								<Typography>{q.text}</Typography>
 								{access && (
 									<Input
 										accept="image/*"
 										style={{ display: "none" }}
-										id="icon-button-file"
+										name={q.id}
+										id={q.id}
 										type="file"
 										// onChange={handleImageSubmit}
 									/>
 								)}
-								<label htmlFor="icon-button-file">
+								<label htmlFor={q.id}>
 									<IconButton
 										color="primary"
 										aria-label="upload picture"
@@ -258,46 +317,38 @@ function StageItem({ stage, label, cnt, access }) {
 										}}
 										disabled={access ? false : true}
 									>
-										{!q.imageURL && (
+										{!q.url && (
 											<span>
 												<PhotoCamera /> Upload Image
 											</span>
 										)}
-										{q.imageURL && (
-											<Avatar
-												name={`i${cnt}i${q.imageId}`}
-												id={`i${cnt}i${q.imageId}`}
-												variant="square"
-												src={q.imageURL}
-											/>
-										)}
+										{q.url && <Avatar variant="square" src={q.url} />}
 									</IconButton>
 								</label>
 							</Grid>
 						);
 					})}
-					{stage?.videos.map((q) => {
+					{videos?.map((q) => {
 						return (
 							<Grid
 								item
 								xs={12}
 								className={classes.qItem}
-								key={`i${cnt}v${q.videoId}`}
+								key={q.id}
 								direction="column"
 							>
-								<Typography>
-									{q.videoText + ` [max marks: ${q.maxMarks}]`}
-								</Typography>
+								<Typography>{q.text}</Typography>
 								{access && (
 									<Input
 										accept="video/*"
 										style={{ display: "none" }}
-										id="icon-button-file"
+										name={q.id}
+										id={q.id}
 										type="file"
 										// onChange={handleImageSubmit}
 									/>
 								)}
-								<label htmlFor="icon-button-file">
+								<label htmlFor={q.id}>
 									<IconButton
 										color="primary"
 										aria-label="upload picture"
@@ -309,19 +360,12 @@ function StageItem({ stage, label, cnt, access }) {
 										}}
 										disabled={access ? false : true}
 									>
-										{!q.videoURL && (
+										{!q.url && (
 											<span>
 												<MovieIcon /> Upload Video
 											</span>
 										)}
-										{q.videoURL && (
-											<Avatar
-												name={`i${cnt}v${q.videoId}`}
-												id={`i${cnt}v${q.videoId}`}
-												variant="square"
-												src={q.videoURL}
-											/>
-										)}
+										{q.url && <Avatar variant="square" src={q.url} />}
 									</IconButton>
 								</label>
 							</Grid>
