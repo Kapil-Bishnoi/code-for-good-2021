@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { Container, Grid, Typography, Divider } from "@material-ui/core";
+import {
+	Container,
+	Grid,
+	Typography,
+	Divider,
+	Button,
+} from "@material-ui/core";
 import axios from "axios";
 import { ProjectCard } from "./ProjectCard";
 
@@ -23,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Projects = () => {
+	const history = useHistory();
 	const classes = useStyles();
 	const role = localStorage.getItem("role");
 	const [userProjects, setUserProjects] = useState([]);
@@ -82,13 +90,15 @@ export const Projects = () => {
 
 	return (
 		<Container className={classes.projects_page}>
-			<Grid item className={classes.heading}>
-				<Typography component="h1" variant="h4">
-					{role === "student"
-						? "Your Active Projects"
-						: "Active Projects Under your Supervision"}
-				</Typography>
-			</Grid>
+			{activeProjects?.length ? (
+				<Grid item className={classes.heading}>
+					<Typography component="h1" variant="h4">
+						{role === "student"
+							? "Your Active Projects"
+							: "Active Projects Under your Supervision"}
+					</Typography>
+				</Grid>
+			) : null}
 			<Container className={classes.activeProjs}>
 				{activeProjects?.map((proj) => {
 					return (
@@ -97,11 +107,13 @@ export const Projects = () => {
 				})}
 			</Container>
 			<Divider variant="fullWidth" />
-			<Grid item className={classes.heading}>
-				<Typography component="h1" variant="h4">
-					{role === "student" ? "Your Submited Projects" : "History"}
-				</Typography>
-			</Grid>
+			{submitedProjects?.length ? (
+				<Grid item className={classes.heading}>
+					<Typography component="h1" variant="h4">
+						{role === "student" ? "Your Submited Projects" : "History"}
+					</Typography>
+				</Grid>
+			) : null}
 			<Container className={classes.submitedProjs}>
 				{submitedProjects?.map((proj) => {
 					return (
@@ -109,6 +121,32 @@ export const Projects = () => {
 					);
 				})}
 			</Container>
+			{!activeProjects?.length && !submitedProjects?.length ? (
+				<Grid
+					item
+					style={{
+						display: "grid",
+						marginTop: "120px",
+					}}
+				>
+					<Button
+						onClick={() => {
+							if (role === "student") {
+								history.push("/createproject");
+							} else {
+								history.push("/selectprojects");
+							}
+						}}
+						style={{ padding: "20px" }}
+						variant="outlined"
+						color="primary"
+					>
+						{role === "student"
+							? "You have not Active and submited projects yet. Start here!"
+							: "You haven't select any project under your supervision. Start from here!"}
+					</Button>
+				</Grid>
+			) : null}
 		</Container>
 	);
 };

@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	allMembers: {
 		display: "flex",
+		[theme.breakpoints.down("sm")]: {
+			flexDirection: "column",
+		},
 	},
 }));
 
@@ -51,7 +54,7 @@ export const Project5I = () => {
 	useEffect(() => {
 		axios
 			.get(
-				`https://cfg2021.herokuapp.com/projects/team/${projectInfo.projectId}`
+				`https://cfg2021.herokuapp.com/projects/team/${projectInfo?.projectId}`
 			)
 			.then((res) => {
 				console.log(res);
@@ -77,20 +80,20 @@ export const Project5I = () => {
 				<Grid item xs={6}>
 					<Typography component="h2" variant="h5">
 						<span style={{ color: "grey" }}>Project Name: </span>
-						{projectInfo.projectName}
+						{projectInfo?.projectName}
 					</Typography>
 				</Grid>
 				<Grid item xs={6} style={{ textAlign: "end" }}>
 					<Typography component="h2" variant="h5">
 						<span style={{ color: "grey" }}>Project Domain: </span>
-						{projectInfo.projectDomain}
+						{projectInfo?.projectDomain}
 					</Typography>
 				</Grid>
 			</Grid>
 			<Container className={classes.allMembers}>
 				<Grid
 					item
-					xs={role === "student" ? 6 : 4}
+					// xs={role === "student" ? 6 : 4}
 					className={classes.teamTitle}
 				>
 					<Typography
@@ -113,7 +116,7 @@ export const Project5I = () => {
 					</Container>
 				</Grid>
 				<Grid
-					xs={role === "student" ? 6 : 4}
+					// xs={role === "student" ? 6 : 4}
 					item
 					className={classes.teamTitle}
 				>
@@ -165,7 +168,10 @@ export const Project5I = () => {
 					Five I Stages
 				</Typography>
 			</Grid>
-			<FiveI projId={projectInfo.projectId} isSubmited={projectInfo.isSubmited} />
+			<FiveI
+				projId={projectInfo?.projectId}
+				isSubmited={projectInfo?.isSubmited}
+			/>
 		</Container>
 	);
 };

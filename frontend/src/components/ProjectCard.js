@@ -181,17 +181,34 @@ export const ProjectCard = ({ proj, isActive }) => {
 					</Button>
 				)}
 				{role === "student" && proj.isSubmited && (
-					<Button fullWidth size="medium" variant="contained" color="primary" onClick={handleProjCardClick}>
+					<Button
+						fullWidth
+						size="medium"
+						variant="contained"
+						color="primary"
+						onClick={handleProjCardClick}
+					>
 						View
 					</Button>
 				)}
 				{role === "mentor" && (
-					<Button fullWidth size="large" variant="contained" color="primary" onClick={handleProjCardClick}>
+					<Button
+						fullWidth
+						size="large"
+						variant="contained"
+						color="primary"
+						onClick={handleProjCardClick}
+					>
 						View
 					</Button>
 				)}
 				{role === "evaluator" && (
-					<Button size="small" variant="contained" color="primary" onClick={handleProjCardClick}>
+					<Button
+						size="small"
+						variant="contained"
+						color="primary"
+						onClick={handleProjCardClick}
+					>
 						{proj.isEvaluated ? "View" : "Evaluate"}
 					</Button>
 				)}

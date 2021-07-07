@@ -11,6 +11,10 @@ import {
 	IconButton,
 	Avatar,
 	Input,
+	Dialog,
+	DialogActions,
+	DialogTitle,
+	Slide,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { PhotoCamera } from "@material-ui/icons";
@@ -18,6 +22,12 @@ import MovieIcon from "@material-ui/icons/Movie";
 import { useHistory } from "react-router-dom";
 import { storage } from "../firebase";
 import ReactPlayer from "react-player";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
+function Alert(props) {
+	return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -48,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 	projectSubmitBtn: {
 		display: "flex",
 		marginTop: theme.spacing(4),
-		justifyContent: "center",
+		justifyContent: "space-around",
 		alignItems: "center",
 		marginBottom: theme.spacing(12),
 	},
@@ -60,6 +70,10 @@ const useStyles = makeStyles((theme) => ({
 		paddingBottom: theme.spacing(4),
 	},
 }));
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+	return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export const FiveI = ({ projId, isSubmited }) => {
 	const classes = useStyles();
@@ -126,10 +140,13 @@ export const FiveI = ({ projId, isSubmited }) => {
 			})
 			.then((res) => {
 				console.log(res);
+				setOpen(true);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
+		setPrevQes(updatedProject.questions);
+		setPrevDemoURL(updatedProject.demoURL);
 	};
 
 	useEffect(() => {
@@ -150,6 +167,8 @@ export const FiveI = ({ projId, isSubmited }) => {
 	}, []);
 
 	const handleProjectSubmit = () => {
+		setAlert(false);
+		saveCurrentChanges();
 		axios
 			.request(`https://cfg2021.herokuapp.com/projects/submit/${projId}`, {
 				method: "POST",
@@ -221,6 +240,15 @@ export const FiveI = ({ projId, isSubmited }) => {
 		},
 	];
 
+	const [openSnackbar, setOpen] = useState(false);
+	const handleClose = (event, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
+		setOpen(false);
+	};
+	const [openAlert, setAlert] = useState(false);
+
 	return (
 		<Container component="main" className={classes.root}>
 			<CssBaseline />
@@ -282,14 +310,50 @@ export const FiveI = ({ projId, isSubmited }) => {
 			{access && (
 				<Grid className={classes.projectSubmitBtn}>
 					<Button
-						onClick={handleProjectSubmit}
+						onClick={saveCurrentChanges}
 						variant="contained"
 						color="primary"
 					>
-						Submit Project
+						Save Changes
+					</Button>
+					<Button
+						onClick={() => setAlert(true)}
+						variant="contained"
+						color="primary"
+					>
+						Save & Submit Project
 					</Button>
 				</Grid>
 			)}
+			<Snackbar
+				open={openSnackbar}
+				autoHideDuration={2000}
+				onClose={handleClose}
+			>
+				<Alert onClose={handleClose} severity="success">
+					Changes Successfully Saved!
+				</Alert>
+			</Snackbar>
+			<Dialog
+				open={openAlert}
+				TransitionComponent={Transition}
+				keepMounted
+				onClose={() => setAlert(false)}
+				aria-labelledby="alert-dialog-slide-title"
+				aria-describedby="alert-dialog-slide-description"
+			>
+				<DialogTitle id="alert-dialog-slide-title">
+					{`You can only submit project once. Please Confirm to submit this project!`}
+				</DialogTitle>
+				<DialogActions>
+					<Button onClick={() => setAlert(false)} color="primary">
+						Cancel
+					</Button>
+					<Button onClick={handleProjectSubmit} color="primary">
+						Confirm
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Container>
 	);
 };
@@ -369,33 +433,35 @@ function StageItem({
 										onChange={handleImageUpload}
 									/>
 								)}
-								<label htmlFor={q.id}>
-									<IconButton
-										color="primary"
-										aria-label="upload picture"
-										component="span"
-										style={{
-											height: "400px",
-											width: "400px",
-											backgroundColor: "#c9c7e0",
-										}}
-										disabled={access ? false : true}
-									>
-										{!q.url && (
-											<span>
-												<PhotoCamera /> Upload Image
-											</span>
-										)}
-										{q.url && (
-											<Avatar
-												variant="square"
-												src={q.url}
-												style={{ height: "400px", width: "400px" }}
-											/>
-										)}
-									</IconButton>
-								</label>
+								{!q.url && (
+									<label htmlFor={q.id}>
+										<IconButton
+											color="primary"
+											aria-label="upload picture"
+											component="span"
+											style={{
+												height: "400px",
+												width: "400px",
+												backgroundColor: "#c9c7e0",
+											}}
+											disabled={access ? false : true}
+										>
+											{!q.url && (
+												<span>
+													<PhotoCamera /> Upload Image
+												</span>
+											)}
+										</IconButton>
+									</label>
+								)}
 								{q.url && (
+									<Avatar
+										variant="square"
+										src={q.url}
+										style={{ height: "400px", width: "400px" }}
+									/>
+								)}
+								{access && q.url && (
 									<>
 										<Input
 											accept="image/*"
@@ -440,35 +506,37 @@ function StageItem({
 										onChange={handleImageUpload}
 									/>
 								)}
-								<label htmlFor={q.id}>
-									<IconButton
-										color="primary"
-										aria-label="upload picture"
-										component="span"
-										style={{
-											height: "400px",
-											width: "400px",
-											backgroundColor: "#c9c7e0",
-										}}
-										disabled={access ? false : true}
-									>
-										{!q.url && (
-											<span>
-												<MovieIcon /> Upload Video
-											</span>
-										)}
-										{q.url && (
-											<ReactPlayer
-												height="400px"
-												width="500px"
-												url={q.url}
-												controls={true}
-												pip={true}
-											/>
-										)}
-									</IconButton>
-								</label>
+								{!q.url && (
+									<label htmlFor={q.id}>
+										<IconButton
+											color="primary"
+											aria-label="upload picture"
+											component="span"
+											style={{
+												height: "400px",
+												width: "400px",
+												backgroundColor: "#c9c7e0",
+											}}
+											disabled={access ? false : true}
+										>
+											{!q.url && (
+												<span>
+													<MovieIcon /> Upload Video
+												</span>
+											)}
+										</IconButton>
+									</label>
+								)}
 								{q.url && (
+									<ReactPlayer
+										height="400px"
+										width="500px"
+										url={q.url}
+										controls={true}
+										pip={true}
+									/>
+								)}
+								{access && q.url && (
 									<>
 										<Input
 											accept="video/*"
