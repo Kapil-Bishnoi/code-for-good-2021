@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	name: {
 		display: "flex",
+		justifyContent: "space-between",
 	},
 	teamTitle: {
 		marginTop: theme.spacing(2),
@@ -77,13 +78,21 @@ export const Project5I = () => {
 	return (
 		<Container className={classes.fiveIPage}>
 			<Grid xs={12} className={classes.name}>
-				<Grid item xs={6}>
+				<Grid item>
 					<Typography component="h2" variant="h5">
 						<span style={{ color: "grey" }}>Project Name: </span>
 						{projectInfo?.projectName}
 					</Typography>
 				</Grid>
-				<Grid item xs={6} style={{ textAlign: "end" }}>
+				{projectInfo?.isEvaluated && (
+					<Grid item>
+						<Typography component="h1" variant="h4">
+							<span style={{ color: "tomato" }}>Score: </span>
+							{projectInfo?.score}
+						</Typography>
+					</Grid>
+				)}
+				<Grid item style={{ textAlign: "end" }}>
 					<Typography component="h2" variant="h5">
 						<span style={{ color: "grey" }}>Project Domain: </span>
 						{projectInfo?.projectDomain}
@@ -171,6 +180,7 @@ export const Project5I = () => {
 			<FiveI
 				projId={projectInfo?.projectId}
 				isSubmited={projectInfo?.isSubmited}
+				isEvaluated={projectInfo?.isEvaluated}
 			/>
 		</Container>
 	);

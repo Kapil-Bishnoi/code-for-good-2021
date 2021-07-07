@@ -15,6 +15,10 @@ import {
 	DialogActions,
 	DialogTitle,
 	Slide,
+	FormControl,
+	MenuItem,
+	Select,
+	InputLabel,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { PhotoCamera } from "@material-ui/icons";
@@ -75,7 +79,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export const FiveI = ({ projId, isSubmited }) => {
+export const FiveI = ({ projId, isSubmited, isEvaluated }) => {
 	const classes = useStyles();
 	const role = localStorage.getItem("role");
 	const history = useHistory();
@@ -217,6 +221,64 @@ export const FiveI = ({ projId, isSubmited }) => {
 		}
 	};
 
+	const [marks, setMarks] = useState({
+		q0: 0,
+		q1: 0,
+		q2: 0,
+		q3: 0,
+		q4: 0,
+		q5: 0,
+		q6: 0,
+		q7: 0,
+		q8: 0,
+		q9: 0,
+		q10: 0,
+		q11: 0,
+		q12: 0,
+		q13: 0,
+		q14: 0,
+		q15: 0,
+		q16: 0,
+		q17: 0,
+		q18: 0,
+		q19: 0,
+	});
+	console.log(marks);
+
+	const handleMarks = (e) => {
+		const val = parseInt(e.target.value);
+		setMarks({
+			...marks,
+			[e.target.name]: val,
+		});
+	};
+
+	const handleEvaluation = () => {
+		let score = 0;
+		Object.keys(marks).map((ques) => {
+			score += marks[ques];
+		});
+		console.log(score);
+		axios
+			.request(
+				`https://cfg2021.herokuapp.com/projects/evaluate/${projId}/${score}`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"Access-Control-Allow-Origin": "*",
+					},
+				}
+			)
+			.then((res) => {
+				console.log(res);
+				history.push("/projects");
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
 	const arr = [
 		{
 			val: 1,
@@ -250,7 +312,7 @@ export const FiveI = ({ projId, isSubmited }) => {
 	const [openAlert, setAlert] = useState(false);
 
 	return (
-		<Container component="main" className={classes.root}>
+		<Container disableGutters component="main" className={classes.root}>
 			<CssBaseline />
 			{access && (
 				<Grid className={classes.saveBtn}>
@@ -277,6 +339,9 @@ export const FiveI = ({ projId, isSubmited }) => {
 							access={access}
 							handleChange={handleChange}
 							handleImageUpload={handleImageUpload}
+							role={role}
+							handleMarks={handleMarks}
+							isEvaluated={isEvaluated}
 						/>
 					</div>
 				);
@@ -306,6 +371,31 @@ export const FiveI = ({ projId, isSubmited }) => {
 					value={demoURL}
 					onChange={(e) => setDemoURL(e.target.value)}
 				/>
+				{role === "evaluator" && !isEvaluated ? (
+					<FormControl
+						variant="outlined"
+						className={classes.formControl}
+						style={{ width: "180px" }}
+					>
+						<InputLabel id="demo-simple-select-outlined-label">
+							Marks Obtained
+						</InputLabel>
+						<Select
+							labelId="demo-simple-select-outlined-label"
+							id="q20"
+							name="q20"
+							onChange={handleMarks}
+							label="Marks Obtained"
+						>
+							<MenuItem value={0}>Zero</MenuItem>
+							<MenuItem value={1}>One</MenuItem>
+							<MenuItem value={2}>Two</MenuItem>
+							<MenuItem value={3}>Three</MenuItem>
+							<MenuItem value={4}>Four</MenuItem>
+							<MenuItem value={5}>Five</MenuItem>
+						</Select>
+					</FormControl>
+				) : null}
 			</Grid>
 			{access && (
 				<Grid className={classes.projectSubmitBtn}>
@@ -322,6 +412,17 @@ export const FiveI = ({ projId, isSubmited }) => {
 						color="primary"
 					>
 						Save & Submit Project
+					</Button>
+				</Grid>
+			)}
+			{role === "evaluator" && !isEvaluated && (
+				<Grid className={classes.projectSubmitBtn}>
+					<Button
+						onClick={() => handleEvaluation()}
+						variant="contained"
+						color="primary"
+					>
+						Submit Evaluation
 					</Button>
 				</Grid>
 			)}
@@ -365,6 +466,9 @@ function StageItem({
 	access,
 	handleChange,
 	handleImageUpload,
+	role,
+	handleMarks,
+	isEvaluated
 }) {
 	const classes = useStyles();
 	const [editable, toggle] = useState(false);
@@ -410,6 +514,31 @@ function StageItem({
 									rows={5}
 									inputProps={{ readOnly: editable && access ? false : true }}
 								/>
+								{role === "evaluator" && !isEvaluated ? (
+									<FormControl
+										variant="outlined"
+										className={classes.formControl}
+										style={{ width: "180px" }}
+									>
+										<InputLabel id="demo-simple-select-outlined-label">
+											Marks Obtained
+										</InputLabel>
+										<Select
+											labelId="demo-simple-select-outlined-label"
+											id={`q${q.id}`}
+											name={`q${q.id}`}
+											onChange={handleMarks}
+											label="Marks Obtained"
+										>
+											<MenuItem value={0}>Zero</MenuItem>
+											<MenuItem value={1}>One</MenuItem>
+											<MenuItem value={2}>Two</MenuItem>
+											<MenuItem value={3}>Three</MenuItem>
+											<MenuItem value={4}>Four</MenuItem>
+											<MenuItem value={5}>Five</MenuItem>
+										</Select>
+									</FormControl>
+								) : null}
 							</Grid>
 						);
 					})}
@@ -483,6 +612,31 @@ function StageItem({
 										</label>
 									</>
 								)}
+								{role === "evaluator" && !isEvaluated ? (
+									<FormControl
+										variant="outlined"
+										className={classes.formControl}
+										style={{ width: "180px" }}
+									>
+										<InputLabel id="demo-simple-select-outlined-label">
+											Marks Obtained
+										</InputLabel>
+										<Select
+											labelId="demo-simple-select-outlined-label"
+											id={`q${q.id}`}
+											name={`q${q.id}`}
+											onChange={handleMarks}
+											label="Marks Obtained"
+										>
+											<MenuItem value={0}>Zero</MenuItem>
+											<MenuItem value={1}>One</MenuItem>
+											<MenuItem value={2}>Two</MenuItem>
+											<MenuItem value={3}>Three</MenuItem>
+											<MenuItem value={4}>Four</MenuItem>
+											<MenuItem value={5}>Five</MenuItem>
+										</Select>
+									</FormControl>
+								) : null}
 							</Grid>
 						);
 					})}
@@ -558,6 +712,31 @@ function StageItem({
 										</label>
 									</>
 								)}
+								{role === "evaluator" && !isEvaluated ? (
+									<FormControl
+										variant="outlined"
+										className={classes.formControl}
+										style={{ width: "180px" }}
+									>
+										<InputLabel id="demo-simple-select-outlined-label">
+											Marks Obtained
+										</InputLabel>
+										<Select
+											labelId="demo-simple-select-outlined-label"
+											id={`q${q.id}`}
+											name={`q${q.id}`}
+											onChange={handleMarks}
+											label="Marks Obtained"
+										>
+											<MenuItem value={0}>Zero</MenuItem>
+											<MenuItem value={1}>One</MenuItem>
+											<MenuItem value={2}>Two</MenuItem>
+											<MenuItem value={3}>Three</MenuItem>
+											<MenuItem value={4}>Four</MenuItem>
+											<MenuItem value={5}>Five</MenuItem>
+										</Select>
+									</FormControl>
+								) : null}
 							</Grid>
 						);
 					})}
