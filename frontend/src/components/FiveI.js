@@ -177,7 +177,11 @@ export const FiveI = ({ projId, isSubmited }) => {
 			<CssBaseline />
 			{access && (
 				<Grid className={classes.saveBtn}>
-					<Button color="primary" variant="contained" onClick={saveCurrentChanges}>
+					<Button
+						color="primary"
+						variant="contained"
+						onClick={saveCurrentChanges}
+					>
 						Save Current Changes
 					</Button>
 					<Button variant="contained" onClick={cancelCurrentChanges}>
@@ -205,15 +209,18 @@ export const FiveI = ({ projId, isSubmited }) => {
 					display: "flex",
 					justifyContent: "space-around",
 					alignItems: "center",
-					paddingBottom:"30px"
+					paddingBottom: "30px",
 				}}
 			>
 				<Typography component="h5" variant="h6">
 					Paste Project Demo Link(Optional)
 				</Typography>
 				<TextField
-					disabled={access ? false : true}
+					inputProps={{ readOnly: access ? false : true }}
+					multiline
+					rows={2}
 					type="url"
+					color="black"
 					fullWidth
 					placeholder="Project Demo URL"
 					variant="outlined"
@@ -280,7 +287,7 @@ function StageItem({ stage, label, questions, access, handleChange }) {
 									fullWidth
 									multiline
 									rows={5}
-									disabled={editable && access ? false : true}
+									inputProps={{ readOnly: editable && access ? false : true }}
 								/>
 							</Grid>
 						);
