@@ -12,7 +12,6 @@ import { Projects } from "./Projects";
 import { Input, IconButton, Button } from "@material-ui/core";
 import { PhotoCamera } from "@material-ui/icons";
 import { storage } from "../firebase";
-import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
 	userInfo: {
@@ -144,6 +143,9 @@ export const Profile = () => {
 								.catch((err) => {
 									console.log(err);
 								});
+						})
+						.catch((err) => {
+							console.log(err);
 						});
 				}
 			);
@@ -281,7 +283,6 @@ export const Profile = () => {
 				)}
 				<Projects />
 			</Grid>
-			
 		</Container>
 	);
 };

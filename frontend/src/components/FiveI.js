@@ -16,6 +16,8 @@ import EditIcon from "@material-ui/icons/Edit";
 import { PhotoCamera } from "@material-ui/icons";
 import MovieIcon from "@material-ui/icons/Movie";
 import { useHistory } from "react-router-dom";
+import { storage } from "../firebase";
+import ReactPlayer from "react-player";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -77,6 +79,22 @@ export const FiveI = ({ projId, isSubmited }) => {
 				const newQ = {
 					...q,
 					ans: e.target.value,
+				};
+				newData.push(newQ);
+			} else {
+				newData.push(q);
+			}
+		});
+		setQues(newData);
+	};
+
+	const setURLs = (id, url) => {
+		const newData = [];
+		questions.map((q) => {
+			if (q.id == id) {
+				const newQ = {
+					...q,
+					url: url,
 				};
 				newData.push(newQ);
 			} else {
@@ -149,6 +167,37 @@ export const FiveI = ({ projId, isSubmited }) => {
 			});
 	};
 
+	const handleImageUpload = (e) => {
+		if (e.target.files[0]) {
+			const imageFile = e.target.files[0];
+			console.log(imageFile);
+			const imageId = e.target.name;
+			const uploadTask = storage
+				.ref(`fiveiMedia/${projId}/${imageId}`)
+				.put(imageFile);
+			uploadTask.on(
+				"state_changed",
+				(snapshot) => {},
+				(error) => {
+					console.log(error);
+				},
+				() => {
+					storage
+						.ref(`fiveiMedia/${projId}`)
+						.child(imageId)
+						.getDownloadURL()
+						.then((url) => {
+							console.log(url);
+							setURLs(imageId, url);
+						})
+						.catch((err) => {
+							console.log(err);
+						});
+				}
+			);
+		}
+	};
+
 	const arr = [
 		{
 			val: 1,
@@ -199,6 +248,7 @@ export const FiveI = ({ projId, isSubmited }) => {
 							stage={item.val}
 							access={access}
 							handleChange={handleChange}
+							handleImageUpload={handleImageUpload}
 						/>
 					</div>
 				);
@@ -244,7 +294,14 @@ export const FiveI = ({ projId, isSubmited }) => {
 	);
 };
 
-function StageItem({ stage, label, questions, access, handleChange }) {
+function StageItem({
+	stage,
+	label,
+	questions,
+	access,
+	handleChange,
+	handleImageUpload,
+}) {
 	const classes = useStyles();
 	const [editable, toggle] = useState(false);
 
@@ -309,7 +366,7 @@ function StageItem({ stage, label, questions, access, handleChange }) {
 										name={q.id}
 										id={q.id}
 										type="file"
-										// onChange={handleImageSubmit}
+										onChange={handleImageUpload}
 									/>
 								)}
 								<label htmlFor={q.id}>
@@ -329,9 +386,37 @@ function StageItem({ stage, label, questions, access, handleChange }) {
 												<PhotoCamera /> Upload Image
 											</span>
 										)}
-										{q.url && <Avatar variant="square" src={q.url} />}
+										{q.url && (
+											<Avatar
+												variant="square"
+												src={q.url}
+												style={{ height: "400px", width: "400px" }}
+											/>
+										)}
 									</IconButton>
 								</label>
+								{q.url && (
+									<>
+										<Input
+											accept="image/*"
+											style={{ display: "none" }}
+											name={q.id}
+											id={q.id}
+											type="file"
+											onChange={handleImageUpload}
+										/>
+										<label htmlFor={q.id}>
+											<Button
+												style={{ marginTop: "8px" }}
+												variant="outlined"
+												color="primary"
+												component="span"
+											>
+												Upload
+											</Button>
+										</label>
+									</>
+								)}
 							</Grid>
 						);
 					})}
@@ -352,7 +437,7 @@ function StageItem({ stage, label, questions, access, handleChange }) {
 										name={q.id}
 										id={q.id}
 										type="file"
-										// onChange={handleImageSubmit}
+										onChange={handleImageUpload}
 									/>
 								)}
 								<label htmlFor={q.id}>
@@ -372,9 +457,39 @@ function StageItem({ stage, label, questions, access, handleChange }) {
 												<MovieIcon /> Upload Video
 											</span>
 										)}
-										{q.url && <Avatar variant="square" src={q.url} />}
+										{q.url && (
+											<ReactPlayer
+												height="400px"
+												width="500px"
+												url={q.url}
+												controls={true}
+												pip={true}
+											/>
+										)}
 									</IconButton>
 								</label>
+								{q.url && (
+									<>
+										<Input
+											accept="video/*"
+											style={{ display: "none" }}
+											name={q.id}
+											id={q.id}
+											type="file"
+											onChange={handleImageUpload}
+										/>
+										<label htmlFor={q.id}>
+											<Button
+												style={{ marginTop: "8px" }}
+												variant="outlined"
+												color="primary"
+												component="span"
+											>
+												Upload
+											</Button>
+										</label>
+									</>
+								)}
 							</Grid>
 						);
 					})}

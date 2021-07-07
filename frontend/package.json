@@ -18,6 +18,7 @@
     "react-indian-state-region-selector": "^6.1.0",
     "react-material-ui-carousel": "^2.2.6",
     "react-places-autocomplete": "^7.3.0",
+    "react-player": "^2.9.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
     "web-vitals": "^1.0.1"
